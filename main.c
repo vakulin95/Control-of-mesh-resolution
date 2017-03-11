@@ -6,7 +6,10 @@
 int main()
 {
     printf("\n----------------Control of mesh resolution----------------\n\n");
+
     read_file(IN_DATA);
+
+    //write_file(IN_DATA);
 
     return 0;
 }
