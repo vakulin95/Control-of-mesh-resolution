@@ -1,6 +1,6 @@
 #include "putdat.h"
 
-int write_file(char *filename, int len)
+int write_file(char *filename)
 {
     int i;
 
@@ -10,11 +10,6 @@ int write_file(char *filename, int len)
     {
         printf("ERROR!: write_file()\n");
         return -1;
-    }
-
-    for(i = 0; i < len; i++)
-    {
-        fprintf(out, "%c", M[i]);
     }
 
     printf("Writing file\n");

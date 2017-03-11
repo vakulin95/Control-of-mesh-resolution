@@ -1,4 +1,8 @@
 $ cat .gitignore
-# комментарий — эта строка игнорируется
+
+#GitIgnore file 11.03.17
+
 *.[oa]
 *.exe
+*.out
+*.gch

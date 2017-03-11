@@ -6,6 +6,7 @@
 
 #define IN_DATA "data/input/m100.off"
 
+int get_meta(FILE *in);
 int read_file(char *filename);
 
 #endif

@@ -1,7 +1,7 @@
 CFLAGS = -c #-Wall
 LFLAGS = -lm -o
 
-all: built run clean
+all: clean built run
 
 built: getdat.o putdat.o main.o
 	@gcc main.o getdat.o putdat.o $(LFLAGS) main.out

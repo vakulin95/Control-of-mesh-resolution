@@ -5,14 +5,8 @@
 
 int main()
 {
-    int i, len;
-
-    len = read_file(IN_DATA);
-
-    if(len >= N)
-        printf("\nMass is full: %d\n", len);
-
-    write_file(OUT_DATA, len);
+    printf("\n----------------Control of mesh resolution----------------\n\n");
+    read_file(IN_DATA);
 
     return 0;
 }

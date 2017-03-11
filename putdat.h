@@ -6,6 +6,6 @@
 
 #define OUT_DATA "data/output/m100.off"
 
-int write_file(char *filename, int len);
+int write_file(char *filename);
 
 #endif
