@@ -1,7 +1,8 @@
 #ifndef __META_H__
 #define __META_H__
 
-#define F_FORMAT_LEN 10
+#define F_FORMAT_LEN            10
+#define DEF_EDGE_MASS_SIZE      10000   // Размер массива ребер
 
 typedef struct obj_meta ObjMeta;
 typedef struct vert Vert;
@@ -24,10 +25,14 @@ struct vert
 
 struct edge
 {
+    int sw;
     Vert edge_vert[2];
+    float length;
 };
 
 ObjMeta meta;   // Структура для метаданных
 int same_vert;  // Количество одинаковых вершин во входном файле
+int ed_num;
+Edge EdgeMass[DEF_EDGE_MASS_SIZE];
 
 #endif

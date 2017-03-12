@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project implements a algorythm for control mesh rezolution in .off files.
+The project implements algorythm for control mesh rezolution in .off files.
 
 ## Progect using
 
