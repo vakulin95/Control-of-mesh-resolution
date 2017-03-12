@@ -5,9 +5,12 @@
 #include <stdio.h>
 
 #define OUT_DATA "data/output/m100.off"
-#define OUT_METADATA "data/output/meta.dat"
+#define OUT_INFODATA "data/output/#info.dat"
 
-int write_meta(char *filename, char *filename_m);
+FILE *out_m;
+
+int open_info(char *filename, char *filename_m);
+int inp_info(char *filename);
 int write_file(char *filename);
 
 #endif

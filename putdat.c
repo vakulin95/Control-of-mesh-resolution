@@ -1,17 +1,20 @@
 #include "putdat.h"
 
-int write_meta(char *filename, char *filename_m)
+int open_info(char *filename, char *filename_m)
 {
-    FILE *out_m;
-
     if(!(out_m = fopen(filename_m, "w")))
     {
         printf("ERROR!: write_meta()\n");
         return -1;
     }
 
+    return 0;
+}
+
+int inp_info(char *filename)
+{
     fprintf(out_m, "Name:\t%s\n\n", filename);
-    fprintf(out_m, "Format:\t%s\nvert:\t%d\nfaces:\t%d\nedges:\t%d\n\n",
+    fprintf(out_m, "Format:\t%s\nVert:\t%d\nFaces:\t%d\nEdges:\t%d\n\n",
             meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
 
     if(same_vert)
@@ -38,8 +41,6 @@ int write_file(char *filename)
         printf("ERROR!: write_file()\n");
         return -1;
     }
-
-    //write_meta(filename, OUT_METADATA);
 
     //printf("Writing file\n");
     fclose(out);

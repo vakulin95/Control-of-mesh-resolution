@@ -7,3 +7,4 @@ $ cat .gitignore
 *.out
 *.gch
 *.off
+*.dat

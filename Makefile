@@ -1,10 +1,10 @@
 CFLAGS = -c #-Wall
 LFLAGS = -lm -o
 
-all: clean built run
+all: clean built run clean_b
 
-built: getdat.o putdat.o main.o
-	@gcc main.o getdat.o putdat.o $(LFLAGS) main.out
+built: getdat.o putdat.o evlib.o main.o
+	@gcc main.o getdat.o putdat.o evlib.o $(LFLAGS) main.out
 
 run:
 	@./main.out
@@ -17,6 +17,9 @@ getdat.o:
 putdat.o:
 	@gcc $(CFLAGS) putdat.c
 
+evlib.o:
+	@gcc $(CFLAGS) evlib.c
+
 main.o:
 	@gcc $(CFLAGS) main.c
 
@@ -24,3 +27,6 @@ main.o:
 
 clean:
 	@rm -rf *.out *.o *.gch
+
+clean_b:
+	@rm -rf *.o *.gch
