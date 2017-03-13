@@ -3,8 +3,8 @@ LFLAGS = -lm -o
 
 all: clean built run clean_b
 
-built: getdat.o putdat.o evlib.o main.o
-	@gcc main.o getdat.o putdat.o evlib.o $(LFLAGS) main.out
+built: getdat.o putdat.o evlib.o cmrlib.o main.o
+	@gcc main.o getdat.o putdat.o evlib.o cmrlib.o $(LFLAGS) main.out
 
 run:
 	@./main.out
@@ -19,6 +19,9 @@ putdat.o:
 
 evlib.o:
 	@gcc $(CFLAGS) evlib.c
+
+cmrlib.o:
+	@gcc $(CFLAGS) cmrlib.c
 
 main.o:
 	@gcc $(CFLAGS) main.c

@@ -14,6 +14,7 @@ int get_data(FILE *in)
 {
     int i, j;
     int v1, v2, v3;
+    float max, min; // максимальное и минимальное значение длинн ребер в файле(для отладки)
 
     Vert *raw_vertix = (Vert*)malloc(sizeof(Vert) * meta.num_of_vert);
     Edge e_temp;
@@ -70,15 +71,36 @@ int get_data(FILE *in)
         }
 
         v1 = v2 = v3 = 0;
+        if(j >= DEF_EDGE_MASS_SIZE)
+        {
+            printf("ERROR!: Out of EdgeMass size\nProgram is interrupted.\n");
+            getchar();
+            break;
+        }
     }
     ed_num = j;
     EdgeMass[j].sw = -1;
 
-    // printf("\nEdges num: %d\n", ed_num);
-    // for(i = 0; i < 10; i++)
+    printf("\nEdges num: %d\n\n", ed_num);
+    max = EdgeMass[0].length;
+    min = EdgeMass[0].length;
+    for(i = 0; i < ed_num; i++)
+    {
+        if(EdgeMass[i].length > max)
+        {
+            max = EdgeMass[i].length;
+        }
+        if(EdgeMass[i].length < min)
+        {
+            min = EdgeMass[i].length;
+        }
+    }
+    printf("max len:\t%f\nmin len:\t%f\n\n", max, min);
+    // for(i = ed_num - 5; i < ed_num; i++)
     // {
     //     print_edge(EdgeMass[i]);
     // }
+    // printf("\n");
 
     free(raw_vertix);
     return 0;
