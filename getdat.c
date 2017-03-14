@@ -81,27 +81,6 @@ int get_data(FILE *in)
     ed_num = j;
     EdgeMass[j].sw = -1;
 
-    printf("\nEdges num: %d\n\n", ed_num);
-    max = EdgeMass[0].length;
-    min = EdgeMass[0].length;
-    for(i = 0; i < ed_num; i++)
-    {
-        if(EdgeMass[i].length > max)
-        {
-            max = EdgeMass[i].length;
-        }
-        if(EdgeMass[i].length < min)
-        {
-            min = EdgeMass[i].length;
-        }
-    }
-    printf("max len:\t%f\nmin len:\t%f\n\n", max, min);
-    // for(i = ed_num - 5; i < ed_num; i++)
-    // {
-    //     print_edge(EdgeMass[i]);
-    // }
-    // printf("\n");
-
     free(raw_vertix);
     return 0;
 }
@@ -139,7 +118,6 @@ int read_file(char *filename)
             meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
 
     get_data(in);
-    inp_info(filename);
     //printf("Reading file\n");
 
     fclose(in);

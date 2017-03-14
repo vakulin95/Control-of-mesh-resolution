@@ -14,6 +14,30 @@ int search_same_vert(Vert vertix, Vert *Array, int size)
     return 0;
 }
 
+int search_ind_vert(Vert vertix, Vert *Array, int size)
+{
+    int i;
+    int Y = -1;
+
+    for(i = 0; i < size; ++i)
+    {
+        if(vertix.x == Array[i].x && vertix.y == Array[i].y && vertix.z == Array[i].z)
+        {
+            Y = i;
+            goto ret;
+        }
+    }
+
+    // if(Y == -1)
+    // {
+    //     printf("ERROR!: No vert was found in mass! search_ind_vert()\n");
+    //     getchar();
+    // }
+
+ret:
+    return Y;
+}
+
 // Сравнить две точки
 int comp_vert(Vert v1, Vert v2)
 {
@@ -54,6 +78,14 @@ int vert_to_vert(Vert *v1, Vert v2)
 int print_vert(Vert v)
 {
     printf("%f %f %f\n", v.x, v.y, v.z);
+
+    return 0;
+}
+
+// Вывод точки в файл
+int fprint_vert(FILE *out, Vert v)
+{
+    fprintf(out, "%f %f %f\n", v.x, v.y, v.z);
 
     return 0;
 }
@@ -130,6 +162,20 @@ int print_edge(Edge e)
     print_vert(e.edge_vert[1]);
 
     printf("\n");
+
+    return 0;
+}
+
+// Вывод ребра в файл
+int fprint_edge(FILE *out, Edge e)
+{
+    fprintf(out, "switched:\t%d\n", e.sw);
+    fprintf(out, "length  :\t%f\n", e.length);
+
+    fprint_vert(out, e.edge_vert[0]);
+    fprint_vert(out, e.edge_vert[1]);
+
+    fprintf(out, "\n");
 
     return 0;
 }
@@ -214,6 +260,90 @@ ret:
     return Y;
 }
 
+// Присвоить одну грань другой
+int face_to_face(Face *f1, Face f2)
+{
+    edge_to_edge(&(f1->edge[0]), f2.edge[0]);
+    edge_to_edge(&(f1->edge[1]), f2.edge[1]);
+    edge_to_edge(&(f1->edge[2]), f2.edge[2]);
+
+    return 0;
+}
+
+// Сравнить две грани
+int comp_faces(Face f1, Face f2)
+{
+    int Y = 0;
+
+    if(comp_edges(f1.edge[0], f2.edge[0])
+    && comp_edges(f1.edge[1], f2.edge[1])
+    && comp_edges(f1.edge[2], f2.edge[2]))
+    {
+        Y = 1;
+        goto ret;
+    }
+    if(comp_edges(f1.edge[0], f2.edge[0])
+    && comp_edges(f1.edge[1], f2.edge[2])
+    && comp_edges(f1.edge[2], f2.edge[1]))
+    {
+        Y = 1;
+        goto ret;
+    }
+    //
+    if(comp_edges(f1.edge[0], f2.edge[1])
+    && comp_edges(f1.edge[1], f2.edge[0])
+    && comp_edges(f1.edge[2], f2.edge[2]))
+    {
+        Y = 1;
+        goto ret;
+    }
+    if(comp_edges(f1.edge[0], f2.edge[1])
+    && comp_edges(f1.edge[1], f2.edge[2])
+    && comp_edges(f1.edge[2], f2.edge[0]))
+    {
+        Y = 1;
+        goto ret;
+    }
+    //
+    if(comp_edges(f1.edge[0], f2.edge[2])
+    && comp_edges(f1.edge[1], f2.edge[0])
+    && comp_edges(f1.edge[2], f2.edge[1]))
+    {
+        Y = 1;
+        goto ret;
+    }
+    if(comp_edges(f1.edge[0], f2.edge[2])
+    && comp_edges(f1.edge[1], f2.edge[1])
+    && comp_edges(f1.edge[2], f2.edge[0]))
+    {
+        Y = 1;
+        goto ret;
+    }
+
+ret:
+    return Y;
+}
+
+// Найти грань в массиве
+int search_same_face(Face f, Face *Array, int size)
+{
+    int i;
+    int Y = 0;
+
+    for(i = 0; i < size; ++i)
+    {
+        if(comp_faces(f, Array[i]))
+        {
+            Y = 1;
+            goto ret;
+        }
+    }
+
+ret:
+    return Y;
+}
+
+// Найти общую вершину двух ребер
 Vert comm_vert(Edge e1, Edge e2)
 {
     Vert Y;
@@ -239,6 +369,8 @@ Vert comm_vert(Edge e1, Edge e2)
         goto ret;
     }
 
+    printf("There no common vertices in comm_vert()\n");
+    getchar();
 
 ret:
     return Y;

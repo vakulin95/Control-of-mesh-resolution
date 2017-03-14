@@ -10,7 +10,7 @@ int mesh_resol_control(float res, float dev)
     up_b = res + dev / 2;
 
     i = 0;
-    while((i < ed_num) || (i < DEF_EDGE_MASS_SIZE))
+    while((i < ed_num) && (i < DEF_EDGE_MASS_SIZE))
     {
         if(EdgeMass[i].sw && EdgeMass[i].length > up_b)
         {
@@ -24,27 +24,6 @@ int mesh_resol_control(float res, float dev)
         }
         i++;
     }
-
-    printf("\nEdges num: %d\n\n", ed_num);
-    max = EdgeMass[0].length;
-    min = EdgeMass[0].length;
-    for(i = 0; i < ed_num; i++)
-    {
-        if(EdgeMass[i].sw && EdgeMass[i].length > max)
-        {
-            max = EdgeMass[i].length;
-        }
-        if(EdgeMass[i].sw && EdgeMass[i].length < min)
-        {
-            min = EdgeMass[i].length;
-        }
-    }
-    printf("max len:\t%f\nmin len:\t%f\n\n", max, min);
-    // for(i = ed_num - 5; i < ed_num; i++)
-    // {
-    //     print_edge(EdgeMass[i]);
-    // }
-    // printf("\n");
 
     return 0;
 }
@@ -67,8 +46,6 @@ int edge_split(int ind)
     for(i = 0; i < 4; ++i)
     {
         add_edge(D.vert[i], mid, ed_num + i);
-        // vert_to_vert(&(EdgeMass[ed_num + i].edge_vert[0]), D.vert[i]);
-        // vert_to_vert(&(EdgeMass[ed_num + i].edge_vert[1]), mid);
     }
     ed_num += 4;
     EdgeMass[ed_num].sw = -1;
@@ -93,11 +70,11 @@ Diamond edge_diamond(int ind)
         goto ret;
     }
 
-    vert_to_vert(&(v1), EdgeMass[ind].edge_vert[0]);
-    vert_to_vert(&(v2), EdgeMass[ind].edge_vert[1]);
+    // vert_to_vert(&(v1), EdgeMass[ind].edge_vert[0]);
+    // vert_to_vert(&(v2), EdgeMass[ind].edge_vert[1]);
 
-    vert_to_vert(&(Y.vert[0]), v1);
-    vert_to_vert(&(Y.vert[1]), v2);
+    vert_to_vert(&(Y.vert[0]), EdgeMass[ind].edge_vert[0]);
+    vert_to_vert(&(Y.vert[1]), EdgeMass[ind].edge_vert[1]);
 
     I = -1;
     J = -1;
@@ -119,10 +96,6 @@ Diamond edge_diamond(int ind)
                 t = 1;
                 vert_to_vert(&(Y.vert[2]), comm_vert(EdgeMass[i], EdgeMass[j]));
 
-                edge_to_edge(&(Y.face[0].edge[0]), EdgeMass[ind]);
-                edge_to_edge(&(Y.face[0].edge[1]), EdgeMass[i]);
-                edge_to_edge(&(Y.face[0].edge[2]), EdgeMass[j]);
-
                 goto fl1;
             }
         }
@@ -137,7 +110,7 @@ fl1:
         goto ret;
     }
 
-    for(i = 0; i < ed_num; ++i)
+    for(i = I; i < ed_num; ++i)
     {
         for(j = i + 1; j < ed_num; ++j)
         {
@@ -151,10 +124,6 @@ fl1:
                 //printf("2 %d %d %d\n", ind, i, j);
                 vert_to_vert(&(Y.vert[3]), comm_vert(EdgeMass[i], EdgeMass[j]));
                 t = 2;
-
-                edge_to_edge(&(Y.face[1].edge[0]), EdgeMass[ind]);
-                edge_to_edge(&(Y.face[1].edge[1]), EdgeMass[i]);
-                edge_to_edge(&(Y.face[1].edge[2]), EdgeMass[j]);
 
                 goto fl2;
             }

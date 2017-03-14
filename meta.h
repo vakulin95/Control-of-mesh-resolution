@@ -36,13 +36,14 @@ struct edge
 
 struct face
 {
+    Vert vert[3];
     Edge edge[3];
 };
 
 struct diamond
 {
     Vert vert[4];
-    Face face[2];
+    //Face face[2];
 };
 
 ObjMeta meta;   // Структура для метаданных
