@@ -7,7 +7,7 @@ built: getdat.o putdat.o evlib.o cmrlib.o main.o
 	@gcc main.o getdat.o putdat.o evlib.o cmrlib.o $(LFLAGS) main.out
 
 run:
-	@./main.out
+	@time ./main.out
 
 #---------------------------------------------#
 

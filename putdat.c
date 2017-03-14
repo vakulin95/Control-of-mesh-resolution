@@ -17,7 +17,17 @@ int write_file(char *filename)
 
     prep_data();
 
+    printf("Writing out file\n");
     fprintf(out, "%s\n%d %d %d\n", meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
+
+    for(i = 0; i < meta.num_of_vert; ++i)
+    {
+        fprintf(out, "%f %f %f\n", out_vert[i].x, out_vert[i].y, out_vert[i].z);
+    }
+    for(i = 0; i < meta.num_of_faces; ++i)
+    {
+        fprintf(out, "3 %d %d %d\n", out_face[i][0], out_face[i][1], out_face[i][2]);
+    }
 
     //printf("Writing file\n");
     fclose(out);
@@ -30,12 +40,6 @@ int prep_data(void)
 
     meta.num_of_vert = prep_vert_mass();
     meta.num_of_faces = prep_face_mass();
-    printf("\nnum of faces: %d\n", meta.num_of_faces);
-
-    for(i = meta.num_of_faces - 10; i < meta.num_of_faces; i++)
-    {
-        printf("%d %d %d\n", out_face[i][0], out_face[i][1], out_face[i][2]);
-    }
 
     return 0;
 }
@@ -80,18 +84,18 @@ int prep_face_mass(void)
             F = search_face(i, 0);
             if(F.vert[2].x != -1)
             {
-                out_face[j][0] = search_ind_vert(F.vert[0], out_vert, meta.num_of_vert);
-                out_face[j][1] = search_ind_vert(F.vert[1], out_vert, meta.num_of_vert);
-                out_face[j][2] = search_ind_vert(F.vert[2], out_vert, meta.num_of_vert);
+                out_face[j][0] = search_ind_vert(&(F.vert[0]), out_vert, meta.num_of_vert);
+                out_face[j][1] = search_ind_vert(&(F.vert[1]), out_vert, meta.num_of_vert);
+                out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
                 j++;
             }
 
             F = search_face(i, 1);
             if(F.vert[2].x != -1)
             {
-                out_face[j][0] = search_ind_vert(F.vert[0], out_vert, meta.num_of_vert);
-                out_face[j][1] = search_ind_vert(F.vert[1], out_vert, meta.num_of_vert);
-                out_face[j][2] = search_ind_vert(F.vert[2], out_vert, meta.num_of_vert);
+                out_face[j][0] = search_ind_vert(&(F.vert[0]), out_vert, meta.num_of_vert);
+                out_face[j][1] = search_ind_vert(&(F.vert[1]), out_vert, meta.num_of_vert);
+                out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
                 j++;
             }
             EdgeMass[i].sw = 0;
@@ -103,7 +107,7 @@ int prep_face_mass(void)
 
 // Найти треугольник в массиве EdgeMass
 // Параметр num определяет номер треугольника по счету который нужно найти для ребра
-// из массива. При num = 0 функция вернет первый треугольник, при всех остальных - второй
+// из массива. При num = 0 функция вернет первый треугольник, при всех остальных num - второй
 Face search_face(int ind, int num)
 {
     int i, j, fl;
@@ -124,11 +128,11 @@ Face search_face(int ind, int num)
                 {
                     if(j != ind)
                     {
-                        if(is_face(EdgeMass[ind], EdgeMass[i], EdgeMass[j]))
+                        if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
                         {
                             if(!num || fl)
                             {
-                                vert_to_vert(&(Y.vert[2]), comm_vert(EdgeMass[i], EdgeMass[j]));
+                                vert_to_vert(&(Y.vert[2]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
                                 goto ret;
                             }
                             fl = 1;
@@ -148,11 +152,11 @@ Face search_face(int ind, int num)
                 {
                     if(j != ind)
                     {
-                        if(is_face(EdgeMass[ind], EdgeMass[i], EdgeMass[j]))
+                        if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
                         {
                             if(!num || fl)
                             {
-                                vert_to_vert(&(Y.vert[2]), comm_vert(EdgeMass[i], EdgeMass[j]));
+                                vert_to_vert(&(Y.vert[2]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
                                 goto ret;
                             }
                             fl = 1;

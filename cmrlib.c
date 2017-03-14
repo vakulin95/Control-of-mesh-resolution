@@ -12,17 +12,20 @@ int mesh_resol_control(float res, float dev)
     i = 0;
     while((i < ed_num) && (i < DEF_EDGE_MASS_SIZE))
     {
-        if(EdgeMass[i].sw && EdgeMass[i].length > up_b)
+        if(EdgeMass[i].sw)
         {
-            //printf("edge_split()\n");
-            edge_split(i);
+            if(EdgeMass[i].length > up_b)
+            {
+                //printf("edge_split()\n");
+                edge_split(i);
+            }
+            else if(EdgeMass[i].length < low_b)
+            {
+                // printf("edge_collapse()\n");
+                // edge_collapse(EdgeMass[i]);
+            }
+            i++;
         }
-        else if(EdgeMass[i].sw && EdgeMass[i].length < low_b)
-        {
-            // printf("edge_collapse()\n");
-            // edge_collapse(EdgeMass[i]);
-        }
-        i++;
     }
 
     return 0;
@@ -48,7 +51,7 @@ int edge_split(int ind)
         add_edge(D.vert[i], mid, ed_num + i);
     }
     ed_num += 4;
-    EdgeMass[ed_num].sw = -1;
+    EdgeMass[ed_num].sw = 0;
 
     EdgeMass[ind].sw = 0;
 
@@ -81,22 +84,25 @@ Diamond edge_diamond(int ind)
     t = 0;
     for(i = 0; i < ed_num; ++i)
     {
-        for(j = i + 1; j < ed_num; ++j)
+        if(EdgeMass[i].sw)
         {
-            if(i == ind || j == ind || !(EdgeMass[i].sw) || !(EdgeMass[j].sw))
+            for(j = i + 1; j < ed_num; ++j)
             {
-                continue;
-            }
-            //printf("ind %d; i %d; j %d\n", ind, i, j);
-            if(is_face(EdgeMass[ind], EdgeMass[i], EdgeMass[j]))
-            {
-                //printf("1 %d %d %d\n", ind, i, j);
-                I = i;
-                J = j;
-                t = 1;
-                vert_to_vert(&(Y.vert[2]), comm_vert(EdgeMass[i], EdgeMass[j]));
+                if(!(EdgeMass[j].sw) || i == ind || j == ind)
+                {
+                    continue;
+                }
+                //printf("ind %d; i %d; j %d\n", ind, i, j);
+                if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
+                {
+                    //printf("1 %d %d %d\n", ind, i, j);
+                    I = i;
+                    J = j;
+                    t = 1;
+                    vert_to_vert(&(Y.vert[2]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
 
-                goto fl1;
+                    goto fl1;
+                }
             }
         }
     }
@@ -112,22 +118,25 @@ fl1:
 
     for(i = I; i < ed_num; ++i)
     {
-        for(j = i + 1; j < ed_num; ++j)
+        if(EdgeMass[i].sw)
         {
-            if((i == I && j == J) || i == ind || j == ind || !(EdgeMass[i].sw) || !(EdgeMass[j].sw))
+            for(j = i + 1; j < ed_num; ++j)
             {
-                continue;
-            }
-            //printf("ind %d; i %d; j %d\n", ind, i, j);
-            if(is_face(EdgeMass[ind], EdgeMass[i], EdgeMass[j]))
-            {
-                //printf("2 %d %d %d\n", ind, i, j);
-                vert_to_vert(&(Y.vert[3]), comm_vert(EdgeMass[i], EdgeMass[j]));
-                t = 2;
+                if((i == I && j == J) || i == ind || j == ind || !(EdgeMass[j].sw))
+                {
+                    continue;
+                }
+                //printf("ind %d; i %d; j %d\n", ind, i, j);
+                if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
+                {
+                    //printf("2 %d %d %d\n", ind, i, j);
+                    vert_to_vert(&(Y.vert[3]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
+                    t = 2;
 
-                goto fl2;
+                    goto fl2;
+                }
             }
-        }
+        }        
     }
 
 fl2:

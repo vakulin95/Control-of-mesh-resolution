@@ -14,14 +14,14 @@ int search_same_vert(Vert vertix, Vert *Array, int size)
     return 0;
 }
 
-int search_ind_vert(Vert vertix, Vert *Array, int size)
+int search_ind_vert(Vert *vertix, Vert *Array, int size)
 {
     int i;
     int Y = -1;
 
     for(i = 0; i < size; ++i)
     {
-        if(vertix.x == Array[i].x && vertix.y == Array[i].y && vertix.z == Array[i].z)
+        if(vertix->x == Array[i].x && vertix->y == Array[i].y && vertix->z == Array[i].z)
         {
             Y = i;
             goto ret;
@@ -78,14 +78,6 @@ int vert_to_vert(Vert *v1, Vert v2)
 int print_vert(Vert v)
 {
     printf("%f %f %f\n", v.x, v.y, v.z);
-
-    return 0;
-}
-
-// Вывод точки в файл
-int fprint_vert(FILE *out, Vert v)
-{
-    fprintf(out, "%f %f %f\n", v.x, v.y, v.z);
 
     return 0;
 }
@@ -166,20 +158,6 @@ int print_edge(Edge e)
     return 0;
 }
 
-// Вывод ребра в файл
-int fprint_edge(FILE *out, Edge e)
-{
-    fprintf(out, "switched:\t%d\n", e.sw);
-    fprintf(out, "length  :\t%f\n", e.length);
-
-    fprint_vert(out, e.edge_vert[0]);
-    fprint_vert(out, e.edge_vert[1]);
-
-    fprintf(out, "\n");
-
-    return 0;
-}
-
 // Вычислить среднюю точку ребра
 Vert calc_ed_midp(Edge e)
 {
@@ -204,52 +182,52 @@ int edge_to_edge(Edge *e1, Edge e2)
 //-----------------------------------------------------------------------------//
 
 // Проверка являются ли три ребра треугольником
-int is_face(Edge e1, Edge e2, Edge e3)
+int is_face(Edge *e1, Edge *e2, Edge *e3)
 {
     int i;
     int Y = 0;
 
-    if(comp_edges(e1, e2) || comp_edges(e1, e3) || comp_edges(e2, e3))
+    if(comp_edges(*e1, *e2) || comp_edges(*e1, *e3) || comp_edges(*e2, *e3))
     {
         printf("ERROR!: Invalid value in is_face()\n");
         getchar();
         goto ret;
     }
 
-    if(comp_vert(e1.edge_vert[0], e2.edge_vert[0]))
+    if(comp_vert(e1->edge_vert[0], e2->edge_vert[0]))
     {
-        if((comp_vert(e1.edge_vert[1], e3.edge_vert[0]) && comp_vert(e2.edge_vert[1], e3.edge_vert[1]))
-        || (comp_vert(e1.edge_vert[1], e3.edge_vert[1]) && comp_vert(e2.edge_vert[1], e3.edge_vert[0])))
+        if((comp_vert(e1->edge_vert[1], e3->edge_vert[0]) && comp_vert(e2->edge_vert[1], e3->edge_vert[1]))
+        || (comp_vert(e1->edge_vert[1], e3->edge_vert[1]) && comp_vert(e2->edge_vert[1], e3->edge_vert[0])))
         {
             Y = 1;
             goto ret;
         }
     }
 
-    if(comp_vert(e1.edge_vert[1], e2.edge_vert[0]))
+    if(comp_vert(e1->edge_vert[1], e2->edge_vert[0]))
     {
-        if((comp_vert(e1.edge_vert[0], e3.edge_vert[0]) && comp_vert(e2.edge_vert[1], e3.edge_vert[1]))
-        || (comp_vert(e1.edge_vert[0], e3.edge_vert[1]) && comp_vert(e2.edge_vert[1], e3.edge_vert[0])))
+        if((comp_vert(e1->edge_vert[0], e3->edge_vert[0]) && comp_vert(e2->edge_vert[1], e3->edge_vert[1]))
+        || (comp_vert(e1->edge_vert[0], e3->edge_vert[1]) && comp_vert(e2->edge_vert[1], e3->edge_vert[0])))
         {
             Y = 1;
             goto ret;
         }
     }
 
-    if(comp_vert(e1.edge_vert[0], e2.edge_vert[1]))
+    if(comp_vert(e1->edge_vert[0], e2->edge_vert[1]))
     {
-        if((comp_vert(e1.edge_vert[1], e3.edge_vert[0]) && comp_vert(e2.edge_vert[0], e3.edge_vert[1]))
-        || (comp_vert(e1.edge_vert[1], e3.edge_vert[1]) && comp_vert(e2.edge_vert[0], e3.edge_vert[0])))
+        if((comp_vert(e1->edge_vert[1], e3->edge_vert[0]) && comp_vert(e2->edge_vert[0], e3->edge_vert[1]))
+        || (comp_vert(e1->edge_vert[1], e3->edge_vert[1]) && comp_vert(e2->edge_vert[0], e3->edge_vert[0])))
         {
             Y = 1;
             goto ret;
         }
     }
 
-    if(comp_vert(e1.edge_vert[1], e2.edge_vert[1]))
+    if(comp_vert(e1->edge_vert[1], e2->edge_vert[1]))
     {
-        if((comp_vert(e1.edge_vert[0], e3.edge_vert[0]) && comp_vert(e2.edge_vert[0], e3.edge_vert[1]))
-        || (comp_vert(e1.edge_vert[0], e3.edge_vert[1]) && comp_vert(e2.edge_vert[0], e3.edge_vert[0])))
+        if((comp_vert(e1->edge_vert[0], e3->edge_vert[0]) && comp_vert(e2->edge_vert[0], e3->edge_vert[1]))
+        || (comp_vert(e1->edge_vert[0], e3->edge_vert[1]) && comp_vert(e2->edge_vert[0], e3->edge_vert[0])))
         {
             Y = 1;
             goto ret;
@@ -259,7 +237,6 @@ int is_face(Edge e1, Edge e2, Edge e3)
 ret:
     return Y;
 }
-
 // Присвоить одну грань другой
 int face_to_face(Face *f1, Face f2)
 {
@@ -344,28 +321,28 @@ ret:
 }
 
 // Найти общую вершину двух ребер
-Vert comm_vert(Edge e1, Edge e2)
+Vert comm_vert(Edge *e1, Edge *e2)
 {
     Vert Y;
 
-    if(comp_vert(e1.edge_vert[0], e2.edge_vert[0]))
+    if(comp_vert(e1->edge_vert[0], e2->edge_vert[0]))
     {
-        vert_to_vert(&Y, e1.edge_vert[0]);
+        vert_to_vert(&Y, e1->edge_vert[0]);
         goto ret;
     }
-    if(comp_vert(e1.edge_vert[0], e2.edge_vert[1]))
+    if(comp_vert(e1->edge_vert[0], e2->edge_vert[1]))
     {
-        vert_to_vert(&Y, e1.edge_vert[0]);
+        vert_to_vert(&Y, e1->edge_vert[0]);
         goto ret;
     }
-    if(comp_vert(e1.edge_vert[1], e2.edge_vert[0]))
+    if(comp_vert(e1->edge_vert[1], e2->edge_vert[0]))
     {
-        vert_to_vert(&Y, e1.edge_vert[1]);
+        vert_to_vert(&Y, e1->edge_vert[1]);
         goto ret;
     }
-    if(comp_vert(e1.edge_vert[1], e2.edge_vert[1]))
+    if(comp_vert(e1->edge_vert[1], e2->edge_vert[1]))
     {
-        vert_to_vert(&Y, e1.edge_vert[1]);
+        vert_to_vert(&Y, e1->edge_vert[1]);
         goto ret;
     }
 

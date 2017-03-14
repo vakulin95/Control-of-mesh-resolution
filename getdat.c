@@ -79,7 +79,7 @@ int get_data(FILE *in)
         }
     }
     ed_num = j;
-    EdgeMass[j].sw = -1;
+    EdgeMass[j].sw = 0;
 
     free(raw_vertix);
     return 0;

@@ -17,11 +17,11 @@ int main()
     write_temp(out_m, OUT_INFODATA);
 
     print_info("Before algo:\n");
-    // mesh_resol_control(DEF_DES_RESOL, DEF_DEVIATION);
-    // print_info("After algo:\n");
+    mesh_resol_control(DEF_DES_RESOL, DEF_DEVIATION);
+    print_info("After algo:\n");
 
-    // fprintf(out_m, "After mesh resolution control:\n");
-    // write_temp(out_m, OUT_INFODATA);
+    fprintf(out_m, "After mesh resolution control:\n");
+    write_temp(out_m, OUT_INFODATA);
 
     write_file(OUT_DATA);
 
