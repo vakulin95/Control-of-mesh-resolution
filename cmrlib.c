@@ -60,8 +60,9 @@ int edge_split(int ind)
 
 Diamond edge_diamond(int ind)
 {
+    //printf("edge_diamond()\n");
     int i, j, I, J, t;
-    Vert v1, v2;
+    Vert v;
     Diamond Y;
 
     //printf("edge_diamond()\n");
@@ -73,22 +74,19 @@ Diamond edge_diamond(int ind)
         goto ret;
     }
 
-    // vert_to_vert(&(v1), EdgeMass[ind].edge_vert[0]);
-    // vert_to_vert(&(v2), EdgeMass[ind].edge_vert[1]);
-
-    vert_to_vert(&(Y.vert[0]), EdgeMass[ind].edge_vert[0]);
-    vert_to_vert(&(Y.vert[1]), EdgeMass[ind].edge_vert[1]);
+    vert_to_vert(&(Y.vert[0]), &(EdgeMass[ind].edge_vert[0]));
+    vert_to_vert(&(Y.vert[1]), &(EdgeMass[ind].edge_vert[1]));
 
     I = -1;
     J = -1;
     t = 0;
     for(i = 0; i < ed_num; ++i)
     {
-        if(EdgeMass[i].sw)
+        if(EdgeMass[i].sw && i != ind)
         {
             for(j = i + 1; j < ed_num; ++j)
             {
-                if(!(EdgeMass[j].sw) || i == ind || j == ind)
+                if(!(EdgeMass[j].sw) || j == ind)
                 {
                     continue;
                 }
@@ -99,7 +97,8 @@ Diamond edge_diamond(int ind)
                     I = i;
                     J = j;
                     t = 1;
-                    vert_to_vert(&(Y.vert[2]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
+                    v = comm_vert(&(EdgeMass[i]), &(EdgeMass[j]));
+                    vert_to_vert(&(Y.vert[2]), &v);
 
                     goto fl1;
                 }
@@ -116,7 +115,7 @@ fl1:
         goto ret;
     }
 
-    for(i = I; i < ed_num; ++i)
+    for(; i < ed_num; ++i)
     {
         if(EdgeMass[i].sw)
         {
@@ -130,13 +129,14 @@ fl1:
                 if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
                 {
                     //printf("2 %d %d %d\n", ind, i, j);
-                    vert_to_vert(&(Y.vert[3]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
+                    v = comm_vert(&(EdgeMass[i]), &(EdgeMass[j]));
+                    vert_to_vert(&(Y.vert[3]), &v);
                     t = 2;
 
                     goto fl2;
                 }
             }
-        }        
+        }
     }
 
 fl2:

@@ -39,37 +39,25 @@ ret:
 }
 
 // Сравнить две точки
-int comp_vert(Vert v1, Vert v2)
-{
-    int Y = -1;
 
-    if(v1.x == v2.x && v1.y == v2.y && v1.z == v2.z)
+int comp_vert(Vert *v1, Vert *v2)
+{
+    int Y = 0;
+
+    if(v1->x == v2->x && v1->y == v2->y && v1->z == v2->z)
     {
         Y = 1;
-        goto ret;
-    }
-    else if(v1.x != v2.x || v1.y != v2.y || v1.z != v2.z)
-    {
-        Y = 0;
-        goto ret;
     }
 
-    printf("FATAL ERROR!: comp_vert()\n");
-    getchar();
-ret:
     return Y;
 }
 
 // Присвоить одну точку другой
-int vert_to_vert(Vert *v1, Vert v2)
+int vert_to_vert(Vert *v1, Vert *v2)
 {
-    // print_vert(*v1);
-    // print_vert(v2);
-    // printf("\n");
-
-    v1->x = v2.x;
-    v1->y = v2.y;
-    v1->z = v2.z;
+    v1->x = v2->x;
+    v1->y = v2->y;
+    v1->z = v2->z;
 
     return 0;
 }
@@ -85,27 +73,22 @@ int print_vert(Vert v)
 //-----------------------------------------------------------------------------//
 
 // Сравнить два ребра
-int comp_edges(Edge e1, Edge e2)
+int comp_edges(Edge *e1, Edge *e2)
 {
     int Y = 0;
 
-    if(e1.sw && e2.sw)
+    if(e1->sw && e2->sw)
     {
-        if(comp_vert(e1.edge_vert[0], e2.edge_vert[0]) && comp_vert(e1.edge_vert[1], e2.edge_vert[1]))
+        if(comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[0]))
+        && comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[1])))
         {
             Y = 1;
             goto ret;
         }
-        else if(comp_vert(e1.edge_vert[1], e2.edge_vert[0]) && comp_vert(e1.edge_vert[0], e2.edge_vert[1]))
+        else if(comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[0]))
+             && comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[1])))
         {
             Y = 1;
-            goto ret;
-        }
-        else if(comp_vert(e1.edge_vert[0], e1.edge_vert[1]) || comp_vert(e2.edge_vert[0], e2.edge_vert[1]))
-        {
-            printf("Some edge has 2 same vertices!\nProgram is interrupted.\n");
-            getchar();
-            Y = -2;
             goto ret;
         }
         else
@@ -134,7 +117,7 @@ int search_same_edge(Edge edge, Edge *Array, int size)
 
     for(i = 0; i < size; ++i)
     {
-        if(comp_edges(edge, Array[i]))
+        if(comp_edges(&edge, &(Array[i])))
         {
             Y = i;
             goto ret;
@@ -173,8 +156,8 @@ Vert calc_ed_midp(Edge e)
 // Присвоить одно ребро другому
 int edge_to_edge(Edge *e1, Edge e2)
 {
-    vert_to_vert(&(e1->edge_vert[0]), e2.edge_vert[0]);
-    vert_to_vert(&(e1->edge_vert[1]), e2.edge_vert[1]);
+    vert_to_vert(&(e1->edge_vert[0]), &(e2.edge_vert[0]));
+    vert_to_vert(&(e1->edge_vert[1]), &(e2.edge_vert[1]));
 
     return 0;
 }
@@ -187,129 +170,47 @@ int is_face(Edge *e1, Edge *e2, Edge *e3)
     int i;
     int Y = 0;
 
-    if(comp_edges(*e1, *e2) || comp_edges(*e1, *e3) || comp_edges(*e2, *e3))
+    if(comp_edges(e1, e2) || comp_edges(e1, e3) || comp_edges(e2, e3))
     {
         printf("ERROR!: Invalid value in is_face()\n");
         getchar();
         goto ret;
     }
 
-    if(comp_vert(e1->edge_vert[0], e2->edge_vert[0]))
+    if(comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[0])))
     {
-        if((comp_vert(e1->edge_vert[1], e3->edge_vert[0]) && comp_vert(e2->edge_vert[1], e3->edge_vert[1]))
-        || (comp_vert(e1->edge_vert[1], e3->edge_vert[1]) && comp_vert(e2->edge_vert[1], e3->edge_vert[0])))
+        if((comp_vert(&(e1->edge_vert[1]), &(e3->edge_vert[0])) && comp_vert(&(e2->edge_vert[1]), &(e3->edge_vert[1])))
+        || (comp_vert(&(e1->edge_vert[1]), &(e3->edge_vert[1])) && comp_vert(&(e2->edge_vert[1]), &(e3->edge_vert[0]))))
         {
             Y = 1;
             goto ret;
         }
     }
 
-    if(comp_vert(e1->edge_vert[1], e2->edge_vert[0]))
+    if(comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[0])))
     {
-        if((comp_vert(e1->edge_vert[0], e3->edge_vert[0]) && comp_vert(e2->edge_vert[1], e3->edge_vert[1]))
-        || (comp_vert(e1->edge_vert[0], e3->edge_vert[1]) && comp_vert(e2->edge_vert[1], e3->edge_vert[0])))
+        if((comp_vert(&(e1->edge_vert[0]), &(e3->edge_vert[0])) && comp_vert(&(e2->edge_vert[1]), &(e3->edge_vert[1])))
+        || (comp_vert(&(e1->edge_vert[0]), &(e3->edge_vert[1])) && comp_vert(&(e2->edge_vert[1]), &(e3->edge_vert[0]))))
         {
             Y = 1;
             goto ret;
         }
     }
 
-    if(comp_vert(e1->edge_vert[0], e2->edge_vert[1]))
+    if(comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[1])))
     {
-        if((comp_vert(e1->edge_vert[1], e3->edge_vert[0]) && comp_vert(e2->edge_vert[0], e3->edge_vert[1]))
-        || (comp_vert(e1->edge_vert[1], e3->edge_vert[1]) && comp_vert(e2->edge_vert[0], e3->edge_vert[0])))
+        if((comp_vert(&(e1->edge_vert[1]), &(e3->edge_vert[0])) && comp_vert(&(e2->edge_vert[0]), &(e3->edge_vert[1])))
+        || (comp_vert(&(e1->edge_vert[1]), &(e3->edge_vert[1])) && comp_vert(&(e2->edge_vert[0]), &(e3->edge_vert[0]))))
         {
             Y = 1;
             goto ret;
         }
     }
 
-    if(comp_vert(e1->edge_vert[1], e2->edge_vert[1]))
+    if(comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[1])))
     {
-        if((comp_vert(e1->edge_vert[0], e3->edge_vert[0]) && comp_vert(e2->edge_vert[0], e3->edge_vert[1]))
-        || (comp_vert(e1->edge_vert[0], e3->edge_vert[1]) && comp_vert(e2->edge_vert[0], e3->edge_vert[0])))
-        {
-            Y = 1;
-            goto ret;
-        }
-    }
-
-ret:
-    return Y;
-}
-// Присвоить одну грань другой
-int face_to_face(Face *f1, Face f2)
-{
-    edge_to_edge(&(f1->edge[0]), f2.edge[0]);
-    edge_to_edge(&(f1->edge[1]), f2.edge[1]);
-    edge_to_edge(&(f1->edge[2]), f2.edge[2]);
-
-    return 0;
-}
-
-// Сравнить две грани
-int comp_faces(Face f1, Face f2)
-{
-    int Y = 0;
-
-    if(comp_edges(f1.edge[0], f2.edge[0])
-    && comp_edges(f1.edge[1], f2.edge[1])
-    && comp_edges(f1.edge[2], f2.edge[2]))
-    {
-        Y = 1;
-        goto ret;
-    }
-    if(comp_edges(f1.edge[0], f2.edge[0])
-    && comp_edges(f1.edge[1], f2.edge[2])
-    && comp_edges(f1.edge[2], f2.edge[1]))
-    {
-        Y = 1;
-        goto ret;
-    }
-    //
-    if(comp_edges(f1.edge[0], f2.edge[1])
-    && comp_edges(f1.edge[1], f2.edge[0])
-    && comp_edges(f1.edge[2], f2.edge[2]))
-    {
-        Y = 1;
-        goto ret;
-    }
-    if(comp_edges(f1.edge[0], f2.edge[1])
-    && comp_edges(f1.edge[1], f2.edge[2])
-    && comp_edges(f1.edge[2], f2.edge[0]))
-    {
-        Y = 1;
-        goto ret;
-    }
-    //
-    if(comp_edges(f1.edge[0], f2.edge[2])
-    && comp_edges(f1.edge[1], f2.edge[0])
-    && comp_edges(f1.edge[2], f2.edge[1]))
-    {
-        Y = 1;
-        goto ret;
-    }
-    if(comp_edges(f1.edge[0], f2.edge[2])
-    && comp_edges(f1.edge[1], f2.edge[1])
-    && comp_edges(f1.edge[2], f2.edge[0]))
-    {
-        Y = 1;
-        goto ret;
-    }
-
-ret:
-    return Y;
-}
-
-// Найти грань в массиве
-int search_same_face(Face f, Face *Array, int size)
-{
-    int i;
-    int Y = 0;
-
-    for(i = 0; i < size; ++i)
-    {
-        if(comp_faces(f, Array[i]))
+        if((comp_vert(&(e1->edge_vert[0]), &(e3->edge_vert[0])) && comp_vert(&(e2->edge_vert[0]), &(e3->edge_vert[1])))
+        || (comp_vert(&(e1->edge_vert[0]), &(e3->edge_vert[1])) && comp_vert(&(e2->edge_vert[0]), &(e3->edge_vert[0]))))
         {
             Y = 1;
             goto ret;
@@ -325,24 +226,24 @@ Vert comm_vert(Edge *e1, Edge *e2)
 {
     Vert Y;
 
-    if(comp_vert(e1->edge_vert[0], e2->edge_vert[0]))
+    if(comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[0])))
     {
-        vert_to_vert(&Y, e1->edge_vert[0]);
+        vert_to_vert(&Y, &(e1->edge_vert[0]));
         goto ret;
     }
-    if(comp_vert(e1->edge_vert[0], e2->edge_vert[1]))
+    if(comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[1])))
     {
-        vert_to_vert(&Y, e1->edge_vert[0]);
+        vert_to_vert(&Y, &(e1->edge_vert[0]));
         goto ret;
     }
-    if(comp_vert(e1->edge_vert[1], e2->edge_vert[0]))
+    if(comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[0])))
     {
-        vert_to_vert(&Y, e1->edge_vert[1]);
+        vert_to_vert(&Y, &(e1->edge_vert[1]));
         goto ret;
     }
-    if(comp_vert(e1->edge_vert[1], e2->edge_vert[1]))
+    if(comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[1])))
     {
-        vert_to_vert(&Y, e1->edge_vert[1]);
+        vert_to_vert(&Y, &(e1->edge_vert[1]));
         goto ret;
     }
 

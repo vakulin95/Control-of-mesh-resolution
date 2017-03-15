@@ -46,24 +46,24 @@ int get_data(FILE *in)
     {
         fscanf(in, "3 %d  %d %d\n", &v1, &v2, &v3);
 
-        vert_to_vert(&(e_temp.edge_vert[0]), raw_vertix[v1]);
-        vert_to_vert(&(e_temp.edge_vert[1]), raw_vertix[v2]);
+        vert_to_vert(&(e_temp.edge_vert[0]), &(raw_vertix[v1]));
+        vert_to_vert(&(e_temp.edge_vert[1]), &(raw_vertix[v2]));
         if(search_same_edge(e_temp, EdgeMass, j) == -1)
         {
             add_edge(raw_vertix[v1], raw_vertix[v2], j);
             j++;
         }
 
-        vert_to_vert(&(e_temp.edge_vert[0]), raw_vertix[v2]);
-        vert_to_vert(&(e_temp.edge_vert[1]), raw_vertix[v3]);
+        vert_to_vert(&(e_temp.edge_vert[0]), &(raw_vertix[v2]));
+        vert_to_vert(&(e_temp.edge_vert[1]), &(raw_vertix[v3]));
         if(search_same_edge(e_temp, EdgeMass, j) == -1)
         {
             add_edge(raw_vertix[v2], raw_vertix[v3], j);
             j++;
         }
 
-        vert_to_vert(&(e_temp.edge_vert[0]), raw_vertix[v1]);
-        vert_to_vert(&(e_temp.edge_vert[1]), raw_vertix[v3]);
+        vert_to_vert(&(e_temp.edge_vert[0]), &(raw_vertix[v1]));
+        vert_to_vert(&(e_temp.edge_vert[1]), &(raw_vertix[v3]));
         if(search_same_edge(e_temp, EdgeMass, j) == -1)
         {
             add_edge(raw_vertix[v1], raw_vertix[v3], j);
@@ -89,8 +89,8 @@ int get_data(FILE *in)
 int add_edge(Vert v1, Vert v2, int ind)
 {
     EdgeMass[ind].sw = 1;
-    vert_to_vert(&(EdgeMass[ind].edge_vert[0]), v1);
-    vert_to_vert(&(EdgeMass[ind].edge_vert[1]), v2);
+    vert_to_vert(&(EdgeMass[ind].edge_vert[0]), &v1);
+    vert_to_vert(&(EdgeMass[ind].edge_vert[1]), &v2);
 
     EdgeMass[ind].length = sqrt(((v2.x - v1.x) * (v2.x - v1.x)) + ((v2.y - v1.y) * (v2.y - v1.y)) + ((v2.z - v1.z) * (v2.z - v1.z)));
 

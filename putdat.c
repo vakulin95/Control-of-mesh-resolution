@@ -6,7 +6,7 @@ int write_file(char *filename)
 
     FILE *out;
 
-    printf("write_file()\n");
+    prep_data();
 
     if(!(out = fopen(filename, "w")))
     {
@@ -15,9 +15,6 @@ int write_file(char *filename)
         return -1;
     }
 
-    prep_data();
-
-    printf("Writing out file\n");
     fprintf(out, "%s\n%d %d %d\n", meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
 
     for(i = 0; i < meta.num_of_vert; ++i)
@@ -29,7 +26,6 @@ int write_file(char *filename)
         fprintf(out, "3 %d %d %d\n", out_face[i][0], out_face[i][1], out_face[i][2]);
     }
 
-    //printf("Writing file\n");
     fclose(out);
     return 0;
 }
@@ -55,12 +51,12 @@ int prep_vert_mass(void)
         {
             if(!search_same_vert(EdgeMass[i].edge_vert[0], out_vert, j))
             {
-                vert_to_vert(&(out_vert[j]), EdgeMass[i].edge_vert[0]);
+                vert_to_vert(&(out_vert[j]), &(EdgeMass[i].edge_vert[0]));
                 ++j;
             }
             if(!search_same_vert(EdgeMass[i].edge_vert[1], out_vert, j))
             {
-                vert_to_vert(&(out_vert[j]), EdgeMass[i].edge_vert[1]);
+                vert_to_vert(&(out_vert[j]), &(EdgeMass[i].edge_vert[1]));
                 ++j;
             }
         }
@@ -72,13 +68,11 @@ int prep_vert_mass(void)
 // Заполнить массив out_face номерами точек из массива out_vert
 int prep_face_mass(void)
 {
-    printf("prep_face_mass(void)\n");
     int i, j;
     Face F;
 
     for(i = 0, j = 0; i < ed_num; ++i)
     {
-        //printf("%d ", i);
         if(EdgeMass[i].sw)
         {
             F = search_face(i, 0);
@@ -89,6 +83,11 @@ int prep_face_mass(void)
                 out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
                 j++;
             }
+            else
+            {
+                //EdgeMass[i].sw = 0;
+                continue;
+            }
 
             F = search_face(i, 1);
             if(F.vert[2].x != -1)
@@ -98,7 +97,7 @@ int prep_face_mass(void)
                 out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
                 j++;
             }
-            EdgeMass[i].sw = 0;
+            //EdgeMass[i].sw = 0;
         }
     }
 
@@ -112,36 +111,11 @@ Face search_face(int ind, int num)
 {
     int i, j, fl;
     Face Y;
+    Vert v;
 
-    vert_to_vert(&(Y.vert[0]), EdgeMass[ind].edge_vert[0]);
-    vert_to_vert(&(Y.vert[1]), EdgeMass[ind].edge_vert[1]);
     Y.vert[2].x = -1.0;
 
     fl = 0;
-    for(i = 0; i < ind; ++i)
-    {
-        if(EdgeMass[i].sw == 1)
-        {
-            for(j = i + 1; j < ed_num; ++j)
-            {
-                if(EdgeMass[j].sw == 1)
-                {
-                    if(j != ind)
-                    {
-                        if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
-                        {
-                            if(!num || fl)
-                            {
-                                vert_to_vert(&(Y.vert[2]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
-                                goto ret;
-                            }
-                            fl = 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
     for(i = ind + 1; i < ed_num; ++i)
     {
         if(EdgeMass[i].sw == 1)
@@ -150,17 +124,15 @@ Face search_face(int ind, int num)
             {
                 if(EdgeMass[j].sw == 1)
                 {
-                    if(j != ind)
+                    if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
                     {
-                        if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
+                        if(!num || fl)
                         {
-                            if(!num || fl)
-                            {
-                                vert_to_vert(&(Y.vert[2]), comm_vert(&(EdgeMass[i]), &(EdgeMass[j])));
-                                goto ret;
-                            }
-                            fl = 1;
+                            v = comm_vert(&(EdgeMass[i]), &(EdgeMass[j]));
+                            vert_to_vert(&(Y.vert[2]), &v);
+                            goto ret;
                         }
+                        fl = 1;
                     }
                 }
             }
@@ -168,6 +140,12 @@ Face search_face(int ind, int num)
     }
 
 ret:
+
+    if(Y.vert[2].x != -1.0)
+    {
+        vert_to_vert(&(Y.vert[0]), &(EdgeMass[ind].edge_vert[0]));
+        vert_to_vert(&(Y.vert[1]), &(EdgeMass[ind].edge_vert[1]));
+    }
     return Y;
 }
 
