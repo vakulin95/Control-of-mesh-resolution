@@ -49,15 +49,24 @@ int prep_vert_mass(void)
     {
         if(EdgeMass[i].sw)
         {
-            if(!search_same_vert(EdgeMass[i].edge_vert[0], out_vert, j))
+            if(j < DEF_OUT_VERT)
             {
-                vert_to_vert(&(out_vert[j]), &(EdgeMass[i].edge_vert[0]));
-                ++j;
+                if(!search_same_vert(EdgeMass[i].edge_vert[0], out_vert, j))
+                {
+                    vert_to_vert(&(out_vert[j]), &(EdgeMass[i].edge_vert[0]));
+                    ++j;
+                }
+                if(!search_same_vert(EdgeMass[i].edge_vert[1], out_vert, j))
+                {
+                    vert_to_vert(&(out_vert[j]), &(EdgeMass[i].edge_vert[1]));
+                    ++j;
+                }
             }
-            if(!search_same_vert(EdgeMass[i].edge_vert[1], out_vert, j))
+            else
             {
-                vert_to_vert(&(out_vert[j]), &(EdgeMass[i].edge_vert[1]));
-                ++j;
+                printf("ERROR!: Out of out_vert[DEF_OUT_VERT]\n");
+                getchar();
+                return j;
             }
         }
     }
@@ -75,29 +84,38 @@ int prep_face_mass(void)
     {
         if(EdgeMass[i].sw)
         {
-            F = search_face(i, 0);
-            if(F.vert[2].x != -1)
+            if(j < DEF_OUT_FACE)
             {
-                out_face[j][0] = search_ind_vert(&(F.vert[0]), out_vert, meta.num_of_vert);
-                out_face[j][1] = search_ind_vert(&(F.vert[1]), out_vert, meta.num_of_vert);
-                out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
-                j++;
+                F = search_face(i, 0);
+                if(F.vert[2].x != -1)
+                {
+                    out_face[j][0] = search_ind_vert(&(F.vert[0]), out_vert, meta.num_of_vert);
+                    out_face[j][1] = search_ind_vert(&(F.vert[1]), out_vert, meta.num_of_vert);
+                    out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
+                    j++;
+                }
+                else
+                {
+                    //EdgeMass[i].sw = 0;
+                    continue;
+                }
+
+                F = search_face(i, 1);
+                if(F.vert[2].x != -1)
+                {
+                    out_face[j][0] = search_ind_vert(&(F.vert[0]), out_vert, meta.num_of_vert);
+                    out_face[j][1] = search_ind_vert(&(F.vert[1]), out_vert, meta.num_of_vert);
+                    out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
+                    j++;
+                }
+                //EdgeMass[i].sw = 0;
             }
             else
             {
-                //EdgeMass[i].sw = 0;
-                continue;
+                printf("ERROR!: Out of out_face[DEF_OUT_FACE][3]\n");
+                getchar();
+                return j;
             }
-
-            F = search_face(i, 1);
-            if(F.vert[2].x != -1)
-            {
-                out_face[j][0] = search_ind_vert(&(F.vert[0]), out_vert, meta.num_of_vert);
-                out_face[j][1] = search_ind_vert(&(F.vert[1]), out_vert, meta.num_of_vert);
-                out_face[j][2] = search_ind_vert(&(F.vert[2]), out_vert, meta.num_of_vert);
-                j++;
-            }
-            //EdgeMass[i].sw = 0;
         }
     }
 

@@ -43,14 +43,17 @@ int edge_split(int ind)
     {
         printf("Trying to split delited edge!\n");
         getchar();
+        return 1;
     }
 
     D = edge_diamond(ind);
-    for(i = 0; i < 4; ++i)
+    i = 0;
+    while(i < 4 && D.vert[i].x != -1)
     {
         add_edge(D.vert[i], mid, ed_num + i);
+        i++;
     }
-    ed_num += 4;
+    ed_num += i;
     EdgeMass[ed_num].sw = 0;
 
     EdgeMass[ind].sw = 0;
@@ -64,8 +67,6 @@ Diamond edge_diamond(int ind)
     int i, j, I, J, t;
     Vert v;
     Diamond Y;
-
-    //printf("edge_diamond()\n");
 
     if(!(EdgeMass[ind].sw))
     {
@@ -111,7 +112,8 @@ fl1:
     if(!t)
     {
         printf("ERROR!: No faces was found in edge_diamond()\n");
-        getchar();
+        Y.vert[2].x = -1;
+        //getchar();
         goto ret;
     }
 
@@ -144,7 +146,8 @@ fl2:
     if(t != 2)
     {
         printf("ERROR!: No second face in edge_diamond()\n");
-        getchar();
+        //getchar();
+        Y.vert[3].x = -1;
         goto ret;
     }
 

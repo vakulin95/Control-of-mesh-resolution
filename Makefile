@@ -1,4 +1,4 @@
-CFLAGS = -c #-Wall
+CFLAGS = -c -O3 # - Wall
 LFLAGS = -lm -o
 
 all: clean built run clean_b
