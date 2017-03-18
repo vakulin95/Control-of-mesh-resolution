@@ -167,13 +167,12 @@ int edge_to_edge(Edge *e1, Edge e2)
 // Проверка являются ли три ребра треугольником
 int is_face(Edge *e1, Edge *e2, Edge *e3)
 {
-    int i;
     int Y = 0;
 
     if(comp_edges(e1, e2) || comp_edges(e1, e3) || comp_edges(e2, e3))
     {
-        printf("ERROR!: Invalid value in is_face()\n");
-        getchar();
+        //printf("ERROR!: Invalid value in is_face()\n");
+        //getchar();
         goto ret;
     }
 

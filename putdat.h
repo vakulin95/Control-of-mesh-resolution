@@ -19,7 +19,7 @@ Face search_face(int ind, int num);
 
 int open_info(char *filename, char *filename_m);
 int write_inp_info(char *filename);
-int write_temp(FILE *t_out, char *filename);
+int write_temp(char *title);
 
 int print_info(char *title);
 

@@ -10,4 +10,7 @@ int mesh_resol_control(float res, float dev);
 int edge_split(int ind);
 Diamond edge_diamond(int ind);
 
+int edge_collapse(int ind);
+Star edge_star(int ind);
+
 #endif

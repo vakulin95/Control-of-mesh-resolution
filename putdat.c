@@ -32,8 +32,6 @@ int write_file(char *filename)
 
 int prep_data(void)
 {
-    int i;
-
     meta.num_of_vert = prep_vert_mass();
     meta.num_of_faces = prep_face_mass();
 
@@ -49,7 +47,7 @@ int prep_vert_mass(void)
     {
         if(EdgeMass[i].sw)
         {
-            if(j < DEF_OUT_VERT)
+            if(j < (DEF_OUT_VERT - 2))
             {
                 if(!search_same_vert(EdgeMass[i].edge_vert[0], out_vert, j))
                 {
@@ -84,7 +82,7 @@ int prep_face_mass(void)
     {
         if(EdgeMass[i].sw)
         {
-            if(j < DEF_OUT_FACE)
+            if(j < (DEF_OUT_FACE - 2))
             {
                 F = search_face(i, 0);
                 if(F.vert[2].x != -1)
@@ -157,7 +155,7 @@ Face search_face(int ind, int num)
         }
     }
 
-ret:
+    ret:
 
     if(Y.vert[2].x != -1.0)
     {
@@ -202,8 +200,8 @@ int write_inp_info(char *filename)
     return 0;
 }
 
-// Напечатать в файл массив EdgeMass
-int write_temp(FILE *t_out, char *filename)
+// Напечатать в файл информацию о EdgeMass с некоторым заголовком
+int write_temp(char *title)
 {
     int i, count_sw;
     float max, min;
@@ -226,14 +224,10 @@ int write_temp(FILE *t_out, char *filename)
             }
         }
     }
-    fprintf(t_out, "\nEdgeMass size:\t%d\nNum of valid edges:\t%d\n\n", ed_num, count_sw);
-    fprintf(t_out, "max len:\t%f\nmin len:\t%f\n", max, min);
+    fprintf(out_m, "\n%s\n", title);
+    fprintf(out_m, "\nEdgeMass size:\t%d\nNum of valid edges:\t%d\n\n", ed_num, count_sw);
+    fprintf(out_m, "max len:\t%f\nmin len:\t%f\n", max, min);
     fprintf(out_m, "\n----------------------------------------------------------\n");
-
-    // for(i = 0; i < ed_num; ++i)
-    // {
-    //     fprint_edge(t_out, EdgeMass[i]);
-    // }
 
     return 0;
 }

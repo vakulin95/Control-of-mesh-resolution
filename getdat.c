@@ -14,7 +14,6 @@ int get_data(FILE *in)
 {
     int i, j;
     int v1, v2, v3;
-    float max, min; // максимальное и минимальное значение длинн ребер в файле(для отладки)
 
     Vert *raw_vertix = (Vert*)malloc(sizeof(Vert) * meta.num_of_vert);
     Edge e_temp;
@@ -26,16 +25,7 @@ int get_data(FILE *in)
         if(search_same_vert(raw_vertix[i], raw_vertix, i))
         {
             same_vert++;
-
-            // raw_vertix[i].x = -1;
-            // raw_vertix[i].y = -1;
-            // raw_vertix[i].z = -1;
         }
-    }
-
-    if(same_vert)
-    {
-        printf("\nNumber of same vertices: %d\n", same_vert);
     }
 
     // Проход по файлу и запись в массив ребер
@@ -99,9 +89,6 @@ int add_edge(Vert v1, Vert v2, int ind)
 
 int read_file(char *filename)
 {
-    char buff;
-    int i;
-
     FILE *in;
 
     if(!(in = fopen(filename, "r")))
@@ -118,7 +105,6 @@ int read_file(char *filename)
             meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
 
     get_data(in);
-    //printf("Reading file\n");
 
     fclose(in);
     return 0;
