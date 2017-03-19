@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define IN_DATA "data/input/m400.off"
+#define IN_DATA "data/input/m303.off"
 
 int get_meta(FILE *in);
 int get_data(FILE *in);

@@ -6,7 +6,7 @@
 #define DEF_IN_PATH             "/usr/home/artyom/db/"
 #define DEF_OUT_PATH            "/usr/home/artyom/mc_db/"
 #define DEF_SV_MASS_SIZE        50
-#define DEF_EDGE_MASS_SIZE      10000000   // Размер массива ребер
+#define DEF_EDGE_MASS_SIZE      10000   // Размер массива ребер
 #define DEF_DES_RESOL           0.07
 #define DEF_DEVIATION           0.06
 
@@ -47,6 +47,7 @@ struct face
 
 struct diamond
 {
+    int val;
     Vert vert[4];
     //Face face[2];
 };

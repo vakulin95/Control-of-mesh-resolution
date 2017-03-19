@@ -61,11 +61,11 @@ int get_data(FILE *in)
         }
 
         v1 = v2 = v3 = 0;
-        if(j >= DEF_EDGE_MASS_SIZE)
+        if(j >= DEF_EDGE_MASS_SIZE - 3)
         {
             printf("ERROR!: Out of EdgeMass size\nProgram is interrupted.\n");
             getchar();
-            break;
+            return 1;
         }
     }
     ed_num = j;
@@ -100,11 +100,10 @@ int read_file(char *filename)
 
     get_meta(in);
 
-    printf("Name:\t%s\n", filename);
-    printf("Format:\t%s\nvert:\t%d\nfaces:\t%d\nedges:\t%d\n",
-            meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
-
-    get_data(in);
+    if(get_data(in))
+    {
+        return 1;
+    }
 
     fclose(in);
     return 0;

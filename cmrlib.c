@@ -3,7 +3,6 @@
 int mesh_resol_control(float res, float dev)
 {
     int i;
-    float up_b, low_b;
 
     low_b = res - dev / 2;
     up_b = res + dev / 2;
@@ -16,7 +15,10 @@ int mesh_resol_control(float res, float dev)
             if(EdgeMass[i].length > up_b)
             {
                 //printf("edge_split()\n");
-                edge_split(i);
+                if(edge_split(i))
+                {
+                    return 1;
+                }
             }
             if(EdgeMass[i].length < low_b)
             {
@@ -47,6 +49,10 @@ int edge_split(int ind)
     }
 
     D = edge_diamond(ind);
+    if(!D.val)
+    {
+        return 1;
+    }
     i = 0;
     while(i < 4 && D.vert[i].x != -1)
     {
@@ -63,7 +69,7 @@ int edge_split(int ind)
 
 Diamond edge_diamond(int ind)
 {
-    int i, j, I, J, t;
+    int i, j, I, J, t, face;
     Vert v;
     Diamond Y;
 
@@ -91,8 +97,14 @@ Diamond edge_diamond(int ind)
                     continue;
                 }
                 //printf("ind %d; i %d; j %d\n", ind, i, j);
-                if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
+                face = is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j]));
+                if(face)
                 {
+                    if(face == -1)
+                    {
+                        Y.val = 0;
+                        goto ret;
+                    }
                     //printf("1 %d %d %d\n", ind, i, j);
                     I = i;
                     J = j;
@@ -124,9 +136,14 @@ Diamond edge_diamond(int ind)
                 {
                     continue;
                 }
-                //printf("ind %d; i %d; j %d\n", ind, i, j);
-                if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
+                face = is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j]));
+                if(face)
                 {
+                    if(face == -1)
+                    {
+                        Y.val = 0;
+                        goto ret;
+                    }
                     //printf("2 %d %d %d\n", ind, i, j);
                     v = comm_vert(&(EdgeMass[i]), &(EdgeMass[j]));
                     vert_to_vert(&(Y.vert[3]), &v);
@@ -166,6 +183,12 @@ int edge_collapse(int ind)
     EdgeMass[ind].sw = 0;
 
     S  = edge_star(ind);
+    if(S.length == 0)
+    {
+        EdgeMass[ind].sw = 1;
+        return 0;
+    }
+
     for(i = 0; i < S.length; ++i)
     {
         //printf("%d\n", ed_num);
@@ -190,6 +213,12 @@ Star edge_star(int ind)
             if(comp_vert(&(EdgeMass[ind].edge_vert[0]), &(EdgeMass[i].edge_vert[0]))
             || comp_vert(&(EdgeMass[ind].edge_vert[1]), &(EdgeMass[i].edge_vert[0])))
             {
+                // if(EdgeMass[i].length > up_b)
+                // {
+                //     //printf("Not collapse!\n");
+                //     Y.length = 0;
+                //     return Y;
+                // }
                 EdgeMass[i].sw = 0;
                 if(!search_same_vert(EdgeMass[i].edge_vert[1], Y.vert, j) && j < DEF_SV_MASS_SIZE)
                 {
@@ -206,6 +235,12 @@ Star edge_star(int ind)
             else if(comp_vert(&(EdgeMass[ind].edge_vert[0]), &(EdgeMass[i].edge_vert[1]))
                  || comp_vert(&(EdgeMass[ind].edge_vert[1]), &(EdgeMass[i].edge_vert[1])))
             {
+                // if(EdgeMass[i].length > up_b)
+                // {
+                //     //printf("Not collapse!\n");
+                //     Y.length = 0;
+                //     return Y;
+                // }
                 EdgeMass[i].sw = 0;
                 if(!search_same_vert(EdgeMass[i].edge_vert[0], Y.vert, j) && j < DEF_SV_MASS_SIZE)
                 {
@@ -225,6 +260,14 @@ Star edge_star(int ind)
     ret:
 
     Y.length = j;
+
+    return Y;
+}
+
+Vert calc_norm_point(Edge *e)
+{
+    Vert Y;
+
 
     return Y;
 }

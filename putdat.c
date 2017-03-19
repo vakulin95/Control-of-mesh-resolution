@@ -259,8 +259,8 @@ int print_info(char *title)
         }
     }
     printf("\n%s\n", title);
-    printf("EdgeMass size:\t\t%d\nNum of valid edges:\t%d\n\n", ed_num, count_sw);
+    printf("EdgeMass size:\t%d\nVal edges:\t%d\n\n", ed_num, count_sw);
     printf("max len:\t%f\nmin len:\t%f\n", max, min);
 
-    return 0;
+    return max;
 }
