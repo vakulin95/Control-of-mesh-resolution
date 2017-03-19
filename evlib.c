@@ -172,10 +172,10 @@ int is_face(Edge *e1, Edge *e2, Edge *e3)
     if(comp_edges(e1, e2) || comp_edges(e1, e3) || comp_edges(e2, e3))
     {
         printf("ERROR!: Invalid value in is_face()\n");
-        print_edge(*e1);
-        print_edge(*e2);
-        print_edge(*e3);
-        getchar();
+        // print_edge(*e1);
+        // print_edge(*e2);
+        // print_edge(*e3);
+        // getchar();
         Y = -1;
         goto ret;
     }

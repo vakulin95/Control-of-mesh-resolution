@@ -163,6 +163,11 @@ Diamond edge_diamond(int ind)
     }
 
     ret:
+
+    if(face != -1)
+    {
+        Y.val = 1;
+    }
     return Y;
 }
 

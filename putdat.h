@@ -16,12 +16,13 @@ int prep_data(void);
 int prep_vert_mass(void);
 int prep_face_mass(void);
 Face search_face(int ind, int num);
+int copy_file(char *in_filename, char *out_filename);
 
-int open_info(char *filename, char *filename_m);
+int open_info(char *filename_m);
 int write_inp_info(char *filename);
 int write_temp(char *title);
 
-int print_info(char *title);
+float print_info(char *title);
 
 FILE *out_m;
 Vert out_vert[DEF_OUT_VERT];

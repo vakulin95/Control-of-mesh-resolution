@@ -3,12 +3,13 @@
 
 #define F_FORMAT_LEN            10
 #define F_NAME_LEN              50
-#define DEF_IN_PATH             "/usr/home/artyom/db/"
-#define DEF_OUT_PATH            "/usr/home/artyom/mc_db/"
+#define STR_LEN                 100
+#define DEF_IN_PATH             "/home/artyom/db/"
+#define DEF_OUT_PATH            "/home/artyom/mc_db/"
 #define DEF_SV_MASS_SIZE        50
 #define DEF_EDGE_MASS_SIZE      10000   // Размер массива ребер
-#define DEF_DES_RESOL           0.07
-#define DEF_DEVIATION           0.06
+#define DEF_DES_RESOL           0.055
+#define DEF_DEVIATION           0.1
 
 typedef struct obj_meta ObjMeta;
 typedef struct vert Vert;

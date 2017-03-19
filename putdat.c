@@ -80,7 +80,7 @@ int prep_face_mass(void)
 
     for(i = 0, j = 0; i < ed_num; ++i)
     {
-        if(EdgeMass[i].sw)
+        if(EdgeMass[i].sw == 1)
         {
             if(j < (DEF_OUT_FACE - 2))
             {
@@ -140,7 +140,7 @@ Face search_face(int ind, int num)
             {
                 if(EdgeMass[j].sw == 1)
                 {
-                    if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])))
+                    if(is_face(&(EdgeMass[ind]), &(EdgeMass[i]), &(EdgeMass[j])) == 1)
                     {
                         if(!num || fl)
                         {
@@ -165,10 +165,32 @@ Face search_face(int ind, int num)
     return Y;
 }
 
+int copy_file(char *in_filename, char *out_filename)
+{
+    int i;
+    char buf[STR_LEN];
+
+    FILE *in, *out;
+
+    if(!(in = fopen(in_filename, "r")) || !(out = fopen(out_filename, "w")))
+    {
+        printf("ERROR!: copy_file()\n");
+        getchar();
+        return -1;
+    }
+
+    while(fgets(buf, 100, in) != NULL)
+    {
+        fprintf(out, "%s", buf);
+    }
+
+    return 0;
+}
+
 //--------------------------------------------------------------------------
 
 // Открыть info.dat файл
-int open_info(char *filename, char *filename_m)
+int open_info(char *filename_m)
 {
     if(!(out_m = fopen(filename_m, "w")))
     {
@@ -235,7 +257,7 @@ int write_temp(char *title)
 //--------------------------------------------------------------------------
 
 // Напечатать в консоль информацию о EdgeMass с некоторым заголовком
-int print_info(char *title)
+float print_info(char *title)
 {
     int i, count_sw;
     float max, min;
