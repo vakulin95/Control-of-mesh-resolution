@@ -13,8 +13,8 @@ int main(void)
     int n;
     printf("\n----------------Control of mesh resolution----------------\n\n");
 
-    //one_file();
-    make_base();
+    one_file();
+    //make_base();
 
     printf("\n----------------------------------------------------------\n\n");
 
@@ -60,6 +60,7 @@ int make_base(void)
             {
                 printf("Can't change resolution!\n\n");
                 fprintf(out_m, "File m%d.off\nCan't change resolution!\n", i * 100 + j);
+                copy_file(in_buff, out_buff);
                 continue;
             }
 

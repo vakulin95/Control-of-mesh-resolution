@@ -8,8 +8,12 @@
 #define DEF_OUT_PATH            "/home/artyom/mc_db/"
 #define DEF_SV_MASS_SIZE        50
 #define DEF_EDGE_MASS_SIZE      10000   // Размер массива ребер
-#define DEF_DES_RESOL           0.055
-#define DEF_DEVIATION           0.1
+
+#define DEF_DES_RESOL           0.0475
+#define DEF_DEVIATION           0.085
+
+// #define DEF_DES_RESOL           0.1
+// #define DEF_DEVIATION           0.2
 
 typedef struct obj_meta ObjMeta;
 typedef struct vert Vert;
