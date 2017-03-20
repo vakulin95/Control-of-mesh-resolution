@@ -1,19 +1,21 @@
 #ifndef __META_H__
 #define __META_H__
 
-#define F_FORMAT_LEN            10
-#define F_NAME_LEN              50
-#define STR_LEN                 100
+#define IN_DATA                 "data/input/m1300.off"
 #define DEF_IN_PATH             "/home/artyom/db/"
 #define DEF_OUT_PATH            "/home/artyom/mc_db/"
-#define DEF_SV_MASS_SIZE        50
-#define DEF_EDGE_MASS_SIZE      10000   // Размер массива ребер
+
+#define F_FORMAT_LEN            10
+#define F_NAME_LEN              50
+#define STR_LEN                 200
+#define INFO_SIZE               3000
+
+#define DEF_SV_MASS_SIZE        50      // Количество вершин в EdgeStar
+#define DEF_EDGE_MASS_SIZE      5000    // Размер массива ребер
 
 #define DEF_DES_RESOL           0.0475
 #define DEF_DEVIATION           0.085
-
-// #define DEF_DES_RESOL           0.1
-// #define DEF_DEVIATION           0.2
+#define DEF_DES_RESOL_2         0.1
 
 typedef struct obj_meta ObjMeta;
 typedef struct vert Vert;
@@ -67,5 +69,7 @@ ObjMeta meta;   // Структура для метаданных
 int same_vert;  // Количество одинаковых вершин во входном файле
 int ed_num;     // Количество ребер в массиве EdgeMass
 Edge EdgeMass[DEF_EDGE_MASS_SIZE];
+float res_max, res_min;
+int count_sw;
 
 #endif

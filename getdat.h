@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define IN_DATA "data/input/m400.off"
-
 int get_meta(FILE *in);
 int get_data(FILE *in);
 int add_edge(Vert v1, Vert v2, int ind);

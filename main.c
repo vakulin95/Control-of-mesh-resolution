@@ -4,81 +4,113 @@
 #include "meta.h"
 #include <omp.h>
 #include <stdio.h>
+#include <string.h>
 
-int make_base(void);
+int make_base(int i_beg, int i_end);
 int one_file(void);
 
-int main(void)
+int main(int argc, char *argv[])
 {
-    int n;
+    int I_beg, I_end;
+
     printf("\n----------------Control of mesh resolution----------------\n\n");
 
-    one_file();
-    //make_base();
+    if(argc == 2 && !strcmp(argv[1], "-b"))
+    {
+        printf("Select the folders to process [0 - 18]:\n");
+        printf("Begin:\t");
+        scanf("%d", &I_beg);
+        printf("End:\t");
+        scanf("%d", &I_end);
+
+        make_base(I_beg, I_end);
+    }
+    else if(argc == 2 && !strcmp(argv[1], "-o"))
+    {
+        one_file();
+    }
+    else
+    {
+        printf("Invalid arguments in main()!\nTry:\n");
+        printf("\t-o: to try algo with one file;\n\t-b: to make data base;");
+    }
 
     printf("\n----------------------------------------------------------\n\n");
 
     return 0;
 }
 
-int make_base(void)
+int make_base(int i_beg, int i_end)
 {
-    int i, j;
+    int i, j, j_end, s_inf;
     char in_buff[F_NAME_LEN];
     char out_buff[F_NAME_LEN];
-    char buff[STR_LEN];
 
-    open_info(OUT_INFODATA);
+    char info_text[INFO_SIZE][STR_LEN];
 
-    for(i = 0; i < 17; ++i)
+    for(i = i_beg, s_inf = 0; i < (i_end + 1); ++i)
     {
-        for(j = 0; j < 100; ++j)
+        if(i != 18)
         {
+            j_end = 2;
+        }
+        else
+        {
+            j_end = 15;
+        }
+        for(j = 0; j < j_end; ++j)
+        {
+            init_algo_data();
 
             sprintf(in_buff, "%s%d/m%d/m%d.off", DEF_IN_PATH, i, i * 100 + j, i * 100 + j);
             sprintf(out_buff, "%sm%d.off", DEF_OUT_PATH, i * 100 + j);
-            sprintf(buff, "Processing file #%d\n", i*100 + j);
+
+            printf("Processing file #%d\n", i*100 + j);
 
             if(read_file(in_buff))
             {
-                printf("Too many edges!\n");
-                fprintf(out_m, "File m%d.off\nToo many edges!\n", i * 100 + j);
+                sprintf(info_text[s_inf++], "m%d.off: Too many edges", i * 100 + j);
                 copy_file(in_buff, out_buff);
                 continue;
             }
 
-            if(print_info(buff) < (DEF_DES_RESOL + (DEF_DEVIATION / 2)))
+            calc_resol();
+            if(res_max < (DEF_DES_RESOL + (DEF_DEVIATION / 2)))
             {
-                printf("Resolution correct!\n\n");
-                fprintf(out_m, "File m%d.off\nResolution correct!\n", i * 100 + j);
+                sprintf(info_text[s_inf++], "m%d.off: Resolution correct", i * 100 + j);
                 copy_file(in_buff, out_buff);
                 continue;
             }
-
 
             if(mesh_resol_control(DEF_DES_RESOL, DEF_DEVIATION))
             {
-                printf("Can't change resolution!\n\n");
-                fprintf(out_m, "File m%d.off\nCan't change resolution!\n", i * 100 + j);
-                copy_file(in_buff, out_buff);
-                continue;
+                sprintf(info_text[s_inf++],
+                "m%d.off: Mesh correction failed. Trying without edge_collapse() with max edge len: %.2f",
+                i * 100 + j, 2 * DEF_DES_RESOL_2);
+
+                init_algo_data();
+                read_file(IN_DATA);
+                if(mesh_resol_control(DEF_DES_RESOL_2, 2*DEF_DES_RESOL_2))
+                {
+                    sprintf(info_text[s_inf++], "m%d.off: Can't change resolution!\n", i * 100 + j);
+                    copy_file(in_buff, out_buff);
+                    continue;
+                }
             }
 
             write_file(out_buff);
         }
     }
+    write_inp_info(info_text);
 
     return 0;
 }
 
 int one_file(void)
 {
-    open_info(OUT_INFODATA);
-
     if(read_file(IN_DATA))
     {
         printf("Too many edges!\n");
-        fprintf(out_m, "File %s\nToo many edges!\n", IN_DATA);
         copy_file(IN_DATA, OUT_DATA);
         return 0;
     }
@@ -91,17 +123,22 @@ int one_file(void)
     if(print_info("Before algo:\n") < (DEF_DES_RESOL + (DEF_DEVIATION / 2)))
     {
         printf("Resolution correct!\n\n");
-        fprintf(out_m, "File %s\nResolution correct!\n", IN_DATA);
         copy_file(IN_DATA, OUT_DATA);
         return 0;
     }
 
-    if(mesh_resol_control(DEF_DES_RESOL, DEF_DEVIATION))
+    if(mesh_resol_control(DEF_DES_RESOL, DEF_DEVIATION)) // < try without collapse
     {
-        printf("Can't change resolution!\n");
-        fprintf(out_m, "File %s\nCan't change resolution!\n", IN_DATA);
-        copy_file(IN_DATA, OUT_DATA);
-        return 1;
+        printf("Mesh correction failed\nTrying without edge_collapse() with max edge len: %f\n", 2 * DEF_DES_RESOL_2);
+
+        init_algo_data();
+        read_file(IN_DATA);
+        if(mesh_resol_control(DEF_DES_RESOL_2, 2*DEF_DES_RESOL_2))
+        {
+            printf("Can't change resolution!\n\n");
+            copy_file(IN_DATA, OUT_DATA);
+            return 0;
+        }
     }
     print_info("After algo:\n");
 

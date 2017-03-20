@@ -18,11 +18,12 @@ The project implements algorythm for control mesh rezolution in .off files.
 
 ## Settings:
 
-To choose resolution or deviation of output models, change this defines in [meta.h](https://github.com/vakulin95/Control-of-mesh-resolution/blob/master/meta.h): 
+To choose resolution or deviation of output models, change this defines in [meta.h](https://github.com/vakulin95/Control-of-mesh-resolution/blob/master/meta.h):
 
 ```C
 #define DEF_DES_RESOL           0.0475
 #define DEF_DEVIATION           0.085
+#define DEF_DES_RESOL_2         0.2
 ```
 
 ## Info

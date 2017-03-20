@@ -27,6 +27,7 @@ int write_file(char *filename)
     }
 
     fclose(out);
+    clear_putdata();
     return 0;
 }
 
@@ -187,70 +188,51 @@ int copy_file(char *in_filename, char *out_filename)
     return 0;
 }
 
+int clear_putdata(void)
+{
+    int i;
+
+    for(i = 0; i < meta.num_of_vert; ++i)
+    {
+        out_vert[i].x = out_vert[i].y = out_vert[i].z = -1.0;
+    }
+    for(i = 0; i < meta.num_of_faces; ++i)
+    {
+        out_face[i][0] = out_face[i][1] = out_face[i][2] = -1;
+    }
+
+    return 0;
+}
+
 //--------------------------------------------------------------------------
 
-// Открыть info.dat файл
-int open_info(char *filename_m)
+// Напечатать inf.dat файл
+int write_inp_info(char info_text[INFO_SIZE][STR_LEN])
 {
-    if(!(out_m = fopen(filename_m, "w")))
+    int i;
+    char info_buff[F_NAME_LEN];
+    FILE *out_m;
+
+    sprintf(info_buff, "%s#info.dat", DEF_OUT_PATH);
+    if(!(out_m = fopen(info_buff, "w")))
     {
         printf("ERROR!: write_meta()\n");
         getchar();
         return -1;
     }
+    fprintf(out_m, "\n---------------------------------Control of mesh resolution---------------------------------\n\n");
+    fprintf(out_m,
+    "DEF_IN_PATH\t\t\t%s\nDEF_OUT_PATH\t\t%s\nDEF_EDGE_MASS_SIZE\t%d\n\nDEF_DES_RESOL\t\t%.4f\nDEF_DEVIATION\t\t%.4f\nDEF_DES_RESOL_2\t\t%.4f\n",
+    DEF_IN_PATH, DEF_OUT_PATH, DEF_EDGE_MASS_SIZE,
+    DEF_DES_RESOL, DEF_DEVIATION, DEF_DES_RESOL_2);
+    fprintf(out_m, "\n--------------------------------------------------------------------------------------------\n\n");
 
-    return 0;
-}
-
-// Напечатать в файл информацию о входном файле
-int write_inp_info(char *filename)
-{
-    fprintf(out_m, "Name:\t%s\n\n", filename);
-    fprintf(out_m, "Format:\t%s\nVert:\t%d\nFaces:\t%d\nEdges:\t%d\n\n",
-            meta.format, meta.num_of_vert, meta.num_of_faces, meta.num_of_edges);
-
-    if(same_vert)
+    for(i = 0; i < INFO_SIZE; ++i)
     {
-        fprintf(out_m, "Number of same vertices:\t%d\n", same_vert);
-    }
-    else
-    {
-        fprintf(out_m, "No same vertices!\n");
+        fprintf(out_m, "%s\n", info_text[i]);
     }
 
-    fprintf(out_m, "\n----------------------------------------------------------\n");
-    return 0;
-}
-
-// Напечатать в файл информацию о EdgeMass с некоторым заголовком
-int write_temp(char *title)
-{
-    int i, count_sw;
-    float max, min;
-
-    max = EdgeMass[0].length;
-    min = EdgeMass[0].length;
-    count_sw = 0;
-    for(i = 0; i < ed_num; i++)
-    {
-        if(EdgeMass[i].sw)
-        {
-            count_sw++;
-            if(EdgeMass[i].length > max)
-            {
-                max = EdgeMass[i].length;
-            }
-            if(EdgeMass[i].length < min)
-            {
-                min = EdgeMass[i].length;
-            }
-        }
-    }
-    fprintf(out_m, "\n%s\n", title);
-    fprintf(out_m, "\nEdgeMass size:\t%d\nNum of valid edges:\t%d\n\n", ed_num, count_sw);
-    fprintf(out_m, "max len:\t%f\nmin len:\t%f\n", max, min);
-    fprintf(out_m, "\n----------------------------------------------------------\n");
-
+    fclose(out_m);
     return 0;
 }
 

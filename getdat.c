@@ -63,8 +63,6 @@ int get_data(FILE *in)
         v1 = v2 = v3 = 0;
         if(j >= DEF_EDGE_MASS_SIZE - 3)
         {
-            // printf("ERROR!: Out of EdgeMass size\nProgram is interrupted.\n");
-            // getchar();
             return 1;
         }
     }

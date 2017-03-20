@@ -23,7 +23,10 @@ int mesh_resol_control(float res, float dev)
             if(EdgeMass[i].length < low_b)
             {
                 //printf("edge_collapse(%d)\n", i);
-                edge_collapse(i);
+                if(edge_collapse(i))
+                {
+                    return 1;
+                }
             }
         }
         i++;
@@ -49,7 +52,7 @@ int edge_split(int ind)
     }
 
     D = edge_diamond(ind);
-    if(!D.val)
+    if(!D.val || ed_num >= DEF_EDGE_MASS_SIZE - 4)
     {
         return 1;
     }
@@ -185,6 +188,12 @@ int edge_collapse(int ind)
         getchar();
         return 1;
     }
+
+    if(ed_num >= DEF_EDGE_MASS_SIZE - DEF_SV_MASS_SIZE)
+    {
+        return 1;
+    }
+
     EdgeMass[ind].sw = 0;
 
     S  = edge_star(ind);
@@ -275,4 +284,62 @@ Vert calc_norm_point(Edge *e)
 
 
     return Y;
+}
+
+void calc_resol(void)
+{
+    int i;
+
+    res_max = EdgeMass[0].length;
+    res_min = EdgeMass[0].length;
+    count_sw = 0;
+    for(i = 0; i < ed_num; i++)
+    {
+        if(EdgeMass[i].sw)
+        {
+            count_sw++;
+            if(EdgeMass[i].length > res_max)
+            {
+                res_max = EdgeMass[i].length;
+            }
+            if(EdgeMass[i].length < res_min)
+            {
+                res_min = EdgeMass[i].length;
+            }
+        }
+    }
+}
+
+int init_algo_data(void)
+{
+    int i;
+
+    sprintf(meta.format, "");
+    meta.num_of_vert = -1;
+    meta.num_of_faces = -1;
+    meta.num_of_edges = -1;
+
+    same_vert = -1;
+    ed_num = -1;
+    res_max = 0;
+    res_min = 0;
+
+    count_sw = -1;
+
+    for(i = 0; i < DEF_EDGE_MASS_SIZE; ++i)
+    {
+        EdgeMass[i].sw = 0;
+
+        EdgeMass[i].edge_vert[0].x = -1;
+        EdgeMass[i].edge_vert[0].y = -1;
+        EdgeMass[i].edge_vert[0].z = -1;
+
+        EdgeMass[i].edge_vert[1].x = -1;
+        EdgeMass[i].edge_vert[1].y = -1;
+        EdgeMass[i].edge_vert[1].z = -1;
+
+        EdgeMass[i].length = -1;
+    }
+
+    return 0;
 }
