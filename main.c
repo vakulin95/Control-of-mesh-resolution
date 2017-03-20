@@ -2,7 +2,6 @@
 #include "putdat.h"
 #include "cmrlib.h"
 #include "meta.h"
-#include <omp.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -48,15 +47,18 @@ int make_base(int i_beg, int i_end)
 
     char info_text[INFO_SIZE][STR_LEN];
 
-    for(i = i_beg, s_inf = 0; i < (i_end + 1); ++i)
+    s_inf = 0;
+    sprintf(info_text[s_inf++], "_[%d-%d]", i_beg, i_end);
+
+    for(i = i_beg; i < (i_end + 1); ++i)
     {
         if(i != 18)
         {
-            j_end = 2;
+            j_end = 5;
         }
         else
         {
-            j_end = 15;
+            j_end = 5;
         }
         for(j = 0; j < j_end; ++j)
         {
@@ -89,7 +91,7 @@ int make_base(int i_beg, int i_end)
                 i * 100 + j, 2 * DEF_DES_RESOL_2);
 
                 init_algo_data();
-                read_file(IN_DATA);
+                read_file(in_buff);
                 if(mesh_resol_control(DEF_DES_RESOL_2, 2*DEF_DES_RESOL_2))
                 {
                     sprintf(info_text[s_inf++], "m%d.off: Can't change resolution!\n", i * 100 + j);
@@ -99,9 +101,10 @@ int make_base(int i_beg, int i_end)
             }
 
             write_file(out_buff);
+            sprintf(info_text[s_inf++], "m%d.off: Resolution changed successfully", i * 100 + j);
         }
     }
-    write_inp_info(info_text);
+    write_inp_info(s_inf, info_text);
 
     return 0;
 }

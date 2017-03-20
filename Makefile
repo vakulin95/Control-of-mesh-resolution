@@ -1,4 +1,5 @@
-#
+# Makefile
+
 CFLAGS = -c -w -O3
 LFLAGS = -lm -o
 
@@ -7,7 +8,8 @@ all: clean built run_base clean_b
 one: clean built run_one clean_b
 
 built: getdat.o putdat.o evlib.o cmrlib.o main.o
-	@gcc -fopenmp main.o getdat.o putdat.o evlib.o cmrlib.o $(LFLAGS) main.out
+	@gcc main.o getdat.o putdat.o evlib.o cmrlib.o $(LFLAGS) main.out
+	@make clean_b
 
 run_one:
 	@time ./main.out -o

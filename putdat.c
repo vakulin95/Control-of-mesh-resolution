@@ -207,19 +207,21 @@ int clear_putdata(void)
 //--------------------------------------------------------------------------
 
 // Напечатать inf.dat файл
-int write_inp_info(char info_text[INFO_SIZE][STR_LEN])
+int write_inp_info(int str_num, char info_text[INFO_SIZE][STR_LEN])
 {
     int i;
     char info_buff[F_NAME_LEN];
     FILE *out_m;
 
-    sprintf(info_buff, "%s#info.dat", DEF_OUT_PATH);
+    sprintf(info_buff, "%s#info%s.dat", DEF_OUT_PATH, info_text[0]);
+
     if(!(out_m = fopen(info_buff, "w")))
     {
         printf("ERROR!: write_meta()\n");
         getchar();
         return -1;
     }
+
     fprintf(out_m, "\n---------------------------------Control of mesh resolution---------------------------------\n\n");
     fprintf(out_m,
     "DEF_IN_PATH\t\t\t%s\nDEF_OUT_PATH\t\t%s\nDEF_EDGE_MASS_SIZE\t%d\n\nDEF_DES_RESOL\t\t%.4f\nDEF_DEVIATION\t\t%.4f\nDEF_DES_RESOL_2\t\t%.4f\n",
@@ -227,7 +229,7 @@ int write_inp_info(char info_text[INFO_SIZE][STR_LEN])
     DEF_DES_RESOL, DEF_DEVIATION, DEF_DES_RESOL_2);
     fprintf(out_m, "\n--------------------------------------------------------------------------------------------\n\n");
 
-    for(i = 0; i < INFO_SIZE; ++i)
+    for(i = 1; i < str_num; ++i)
     {
         fprintf(out_m, "%s\n", info_text[i]);
     }

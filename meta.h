@@ -1,14 +1,14 @@
 #ifndef __META_H__
 #define __META_H__
 
-#define IN_DATA                 "data/input/m1300.off"
+#define IN_DATA                 "data/input/m400.off"
 #define DEF_IN_PATH             "/home/artyom/db/"
 #define DEF_OUT_PATH            "/home/artyom/mc_db/"
 
 #define F_FORMAT_LEN            10
-#define F_NAME_LEN              50
+#define F_NAME_LEN              100
 #define STR_LEN                 200
-#define INFO_SIZE               3000
+#define INFO_SIZE               2500
 
 #define DEF_SV_MASS_SIZE        50      // Количество вершин в EdgeStar
 #define DEF_EDGE_MASS_SIZE      5000    // Размер массива ребер

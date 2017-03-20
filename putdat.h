@@ -18,7 +18,7 @@ Face search_face(int ind, int num);
 int copy_file(char *in_filename, char *out_filename);
 int clear_putdata(void);
 
-int write_inp_info(char info_text[INFO_SIZE][STR_LEN]);
+int write_inp_info(int str_num, char info_text[INFO_SIZE][STR_LEN]);
 float print_info(char *title);
 
 Vert out_vert[DEF_OUT_VERT];
