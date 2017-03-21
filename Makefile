@@ -3,12 +3,12 @@
 CFLAGS = -c -w -O3
 LFLAGS = -lm -o
 
-all: clean built run_base clean_b
+all: clean built run_base
 
-one: clean built run_one clean_b
+one: clean built run_one
 
 built: getdat.o putdat.o evlib.o cmrlib.o main.o
-	@gcc main.o getdat.o putdat.o evlib.o cmrlib.o $(LFLAGS) main.out
+	@gcc $^ $(LFLAGS) main.out
 	@make clean_b
 
 run_one:
@@ -18,21 +18,8 @@ run_base:
 	@time ./main.out -b
 
 #---------------------------------------------#
-
-getdat.o:
-	@gcc $(CFLAGS) getdat.c
-
-putdat.o:
-	@gcc $(CFLAGS) putdat.c
-
-evlib.o:
-	@gcc $(CFLAGS) evlib.c
-
-cmrlib.o:
-	@gcc $(CFLAGS) cmrlib.c
-
-main.o:
-	@gcc $(CFLAGS) main.c
+%.o: %.c
+	@gcc $(CFLAGS) $< -o $@
 
 #---------------------------------------------#
 

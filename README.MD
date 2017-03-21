@@ -6,16 +6,16 @@ The project implements algorythm for control mesh rezolution in .off files. It w
 
 
 This program can work in two different modes:
-1. Correct resolution for one file - Data located in [input](https://github.com/vakulin95/Control-of-mesh-resolution/tree/master/data/input) and [output](https://github.com/vakulin95/Control-of-mesh-resolution/tree/master/data/output) folders.
+1. Correct resolution for one file. Data located in [input](https://github.com/vakulin95/Control-of-mesh-resolution/tree/master/data/input) and [output](https://github.com/vakulin95/Control-of-mesh-resolution/tree/master/data/output) folders.
 2. Create new database whith corrected mesh resolution from [Princeton Shape Benchmark](http://shape.cs.princeton.edu/benchmark/).
 
 ## Project using
 
 * Run `make` to built and make new data base with corrected resolution;
 * Run `make one` to built and try algorythm on one file;
-* Run `make built` to just built project;
-* Run `make_one` to launch program to try algorythm for one file;
-* Run `make_base` to launch program and make data base with corrected resolution;
+* Run `make built` to just built the project;
+* Run `make run_one` to launch program and try algorythm for one file;
+* Run `make run_base` to launch program and make data base with corrected resolution;
 
 ## Progect structure
 
@@ -48,4 +48,4 @@ Use define `IN_DATA` to choose file in [data/input](https://github.com/vakulin95
 
 ## Info
 
-The description of the implemented algorithm can be found [here](https://github.com/vakulin95/Control-of-mesh-resolution/tree/master/data/article.pdf). Also when program works in database mode, in the output folder located #info.dat file. You can find program result in this file.
+The description of the implemented algorithm can be found [here](https://github.com/vakulin95/Control-of-mesh-resolution/tree/master/data/article.pdf). Also when program works in database mode, in the output folder located _#info.dat_ file. You can find program result in this file.

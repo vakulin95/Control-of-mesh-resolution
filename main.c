@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 int make_base(int i_beg, int i_end)
 {
     int i, j, j_end, s_inf;
+    int file_n, r_fl, w_fl;
     char in_buff[F_NAME_LEN];
     char out_buff[F_NAME_LEN];
 
@@ -54,32 +55,40 @@ int make_base(int i_beg, int i_end)
     {
         if(i != 18)
         {
-            j_end = 5;
+            j_end = 100;
         }
         else
         {
-            j_end = 5;
+            j_end = 15;
         }
-        for(j = 0; j < j_end; ++j)
+        for(j = 0, r_fl = 0, w_fl = 0; j < j_end; ++j)
         {
+            file_n = i * 100 + j;
             init_algo_data();
 
-            sprintf(in_buff, "%s%d/m%d/m%d.off", DEF_IN_PATH, i, i * 100 + j, i * 100 + j);
-            sprintf(out_buff, "%sm%d.off", DEF_OUT_PATH, i * 100 + j);
+            sprintf(in_buff, "%s%d/m%d/m%d.off", DEF_IN_PATH, i, file_n, file_n);
+            sprintf(out_buff, "%sm%d.off", DEF_OUT_PATH, file_n);
 
             printf("Processing file #%d\n", i*100 + j);
 
-            if(read_file(in_buff))
+            r_fl = read_file(in_buff);
+
+            if(r_fl == 1)
             {
-                sprintf(info_text[s_inf++], "m%d.off: Too many edges", i * 100 + j);
+                sprintf(info_text[s_inf++], "m%d.off: Too many edges", file_n);
                 copy_file(in_buff, out_buff);
+                continue;
+            }
+            if(r_fl == -1)
+            {
+                sprintf(info_text[s_inf++], "m%d.off: File not found", file_n);
                 continue;
             }
 
             calc_resol();
             if(res_max < (DEF_DES_RESOL + (DEF_DEVIATION / 2)))
             {
-                sprintf(info_text[s_inf++], "m%d.off: Resolution correct", i * 100 + j);
+                sprintf(info_text[s_inf++], "m%d.off: Resolution correct", file_n);
                 copy_file(in_buff, out_buff);
                 continue;
             }
@@ -88,20 +97,25 @@ int make_base(int i_beg, int i_end)
             {
                 sprintf(info_text[s_inf++],
                 "m%d.off: Mesh correction failed. Trying without edge_collapse() with max edge len: %.2f",
-                i * 100 + j, 2 * DEF_DES_RESOL_2);
+                file_n, 2 * DEF_DES_RESOL_2);
 
                 init_algo_data();
                 read_file(in_buff);
                 if(mesh_resol_control(DEF_DES_RESOL_2, 2*DEF_DES_RESOL_2))
                 {
-                    sprintf(info_text[s_inf++], "m%d.off: Can't change resolution!\n", i * 100 + j);
+                    sprintf(info_text[s_inf++], "m%d.off: Can't change resolution!\n", file_n);
                     copy_file(in_buff, out_buff);
                     continue;
                 }
             }
 
-            write_file(out_buff);
-            sprintf(info_text[s_inf++], "m%d.off: Resolution changed successfully", i * 100 + j);
+            w_fl = write_file(out_buff);
+            if(w_fl == -1)
+            {
+                sprintf(info_text[s_inf++], "m%d.off: File writing error", file_n);
+                continue;
+            }
+            sprintf(info_text[s_inf++], "m%d.off: Resolution changed successfully", file_n);
         }
     }
     write_inp_info(s_inf, info_text);

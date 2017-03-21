@@ -100,7 +100,7 @@ int comp_edges(Edge *e1, Edge *e2)
     else
     {
         printf("Trying to compare delited edge!\n");
-        getchar();
+        //getchar();
         Y = 0;
         goto ret;
     }
@@ -251,7 +251,7 @@ Vert comm_vert(Edge *e1, Edge *e2)
     }
 
     printf("There no common vertices in comm_vert()\n");
-    getchar();
+    //getchar();
 
 ret:
     return Y;

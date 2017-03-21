@@ -91,8 +91,8 @@ int read_file(char *filename)
 
     if(!(in = fopen(filename, "r")))
     {
-        printf("ERROR!: read_file()\n");
-        getchar();
+        //printf("ERROR!: read_file()\n");
+        //getchar();
         return -1;
     }
 

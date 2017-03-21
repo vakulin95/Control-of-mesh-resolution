@@ -10,7 +10,7 @@
 #define STR_LEN                 200
 #define INFO_SIZE               2500
 
-#define DEF_SV_MASS_SIZE        50      // Количество вершин в EdgeStar
+#define DEF_SV_MASS_SIZE        100      // Количество вершин в EdgeStar
 #define DEF_EDGE_MASS_SIZE      5000    // Размер массива ребер
 
 #define DEF_DES_RESOL           0.0475

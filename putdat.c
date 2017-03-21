@@ -11,7 +11,7 @@ int write_file(char *filename)
     if(!(out = fopen(filename, "w")))
     {
         printf("ERROR!: write_file()\n");
-        getchar();
+        //getchar();
         return -1;
     }
 
@@ -35,6 +35,11 @@ int prep_data(void)
 {
     meta.num_of_vert = prep_vert_mass();
     meta.num_of_faces = prep_face_mass();
+
+    if(meta.num_of_vert == -1 || meta.num_of_faces == -1)
+    {
+        return 1;
+    }
 
     return 0;
 }
@@ -64,7 +69,8 @@ int prep_vert_mass(void)
             else
             {
                 printf("ERROR!: Out of out_vert[DEF_OUT_VERT]\n");
-                getchar();
+                //getchar();
+                j = -1;
                 return j;
             }
         }
@@ -112,7 +118,8 @@ int prep_face_mass(void)
             else
             {
                 printf("ERROR!: Out of out_face[DEF_OUT_FACE][3]\n");
-                getchar();
+                //getchar();
+                j = -1;
                 return j;
             }
         }
@@ -166,6 +173,7 @@ Face search_face(int ind, int num)
     return Y;
 }
 
+// Скопировать файл
 int copy_file(char *in_filename, char *out_filename)
 {
     int i;
@@ -188,6 +196,7 @@ int copy_file(char *in_filename, char *out_filename)
     return 0;
 }
 
+// Очистить данные из putdat.h
 int clear_putdata(void)
 {
     int i;

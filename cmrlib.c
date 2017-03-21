@@ -47,7 +47,7 @@ int edge_split(int ind)
     if(!(EdgeMass[ind].sw))
     {
         printf("Trying to split delited edge!\n");
-        getchar();
+        //getchar();
         return 1;
     }
 
@@ -78,8 +78,10 @@ Diamond edge_diamond(int ind)
 
     if(!(EdgeMass[ind].sw))
     {
+        face = -1;
+        Y.val = 0;
         printf("ERROR!: Trying to get edge_diamond from delited edge\n");
-        getchar();
+        //getchar();
         goto ret;
     }
 
@@ -185,7 +187,7 @@ int edge_collapse(int ind)
     if(!(EdgeMass[ind].sw))
     {
         printf("Trying to collapse delited edge!\n");
-        getchar();
+        //getchar();
         return 1;
     }
 
@@ -197,6 +199,10 @@ int edge_collapse(int ind)
     EdgeMass[ind].sw = 0;
 
     S  = edge_star(ind);
+    if(S.length == -1)
+    {
+        return 1;
+    }
     if(S.length == 0)
     {
         EdgeMass[ind].sw = 1;
@@ -242,8 +248,9 @@ Star edge_star(int ind)
                 else if(j >= DEF_SV_MASS_SIZE)
                 {
                     printf("ERROR!: Out of star.vert[DEF_SV_MASS_SIZE]\n");
-                    getchar();
-                    goto ret;
+                    Y.length = -1;
+                    //getchar();
+                    return Y;
                 }
             }
             else if(comp_vert(&(EdgeMass[ind].edge_vert[0]), &(EdgeMass[i].edge_vert[1]))
@@ -264,8 +271,10 @@ Star edge_star(int ind)
                 else if(j >= DEF_SV_MASS_SIZE)
                 {
                     printf("ERROR!: Out of star.vert[DEF_SV_MASS_SIZE]\n");
-                    getchar();
-                    goto ret;
+                    //getchar();
+                    Y.length = -1;
+                    //getchar();
+                    return Y;
                 }
             }
         }
