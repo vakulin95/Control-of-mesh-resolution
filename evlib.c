@@ -153,6 +153,20 @@ Vert calc_ed_midp(Edge e)
     return out;
 }
 
+//Вычислить среднее проекций середины ребра на N плоскостей
+Vert calc_edpp_on_plane(Edge e, Star s)
+{
+    int i;
+    Vert Y;
+    float sum;
+
+    Y = calc_ed_midp(e);
+
+    
+
+    return Y;
+}
+
 // Присвоить одно ребро другому
 int edge_to_edge(Edge *e1, Edge e2)
 {

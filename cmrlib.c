@@ -183,6 +183,7 @@ int edge_collapse(int ind)
     int i;
     Star S;
     Vert mid = calc_ed_midp(EdgeMass[ind]);
+    Vert temp;
 
     if(!(EdgeMass[ind].sw))
     {
@@ -209,6 +210,7 @@ int edge_collapse(int ind)
         return 0;
     }
 
+    temp = calc_edpp_on_plane(EdgeMass[ind], S);
     for(i = 0; i < S.length; ++i)
     {
         //printf("%d\n", ed_num);
@@ -222,10 +224,10 @@ int edge_collapse(int ind)
 
 Star edge_star(int ind)
 {
-    int i, j;
+    int i, j, k;
     Star Y;
 
-    for(i = 0, j = 0; i < ed_num; ++i)
+    for(i = 0, j = 0, k = 0; i < ed_num; ++i)
     {
         //printf("%d\n", j);
         if(EdgeMass[i].sw)
@@ -239,6 +241,12 @@ Star edge_star(int ind)
                 //     Y.length = 0;
                 //     return Y;
                 // }
+                if((search_same_edge(EdgeMass[i], Y.edge, k) == -1) && k < DEF_SE_MASS_SIZE)
+                {
+                    edge_to_edge(&(Y.edge[k]), EdgeMass[i]);
+                    Y.edge[k].sw = 1;
+                    k++;
+                }
                 EdgeMass[i].sw = 0;
                 if(!search_same_vert(EdgeMass[i].edge_vert[1], Y.vert, j) && j < DEF_SV_MASS_SIZE)
                 {
@@ -262,6 +270,12 @@ Star edge_star(int ind)
                 //     Y.length = 0;
                 //     return Y;
                 // }
+                if((search_same_edge(EdgeMass[i], Y.edge, k) == -1) && k < DEF_SE_MASS_SIZE)
+                {
+                    edge_to_edge(&(Y.edge[k]), EdgeMass[i]);
+                    Y.edge[k].sw = 1;
+                    k++;
+                }
                 EdgeMass[i].sw = 0;
                 if(!search_same_vert(EdgeMass[i].edge_vert[0], Y.vert, j) && j < DEF_SV_MASS_SIZE)
                 {
@@ -282,15 +296,8 @@ Star edge_star(int ind)
 
     ret:
 
+    Y.ed_length = k;
     Y.length = j;
-
-    return Y;
-}
-
-Vert calc_norm_point(Edge *e)
-{
-    Vert Y;
-
 
     return Y;
 }

@@ -14,6 +14,7 @@ int comp_edges(Edge *e1, Edge *e2);
 int search_same_edge(Edge edge, Edge *Array, int size);
 int print_edge(Edge e);
 Vert calc_ed_midp(Edge e);
+Vert calc_edpp_on_plane(Edge e, Star s);
 int edge_to_edge(Edge *e1, Edge e2);
 
 int is_face(Edge *e1, Edge *e2, Edge *e3);

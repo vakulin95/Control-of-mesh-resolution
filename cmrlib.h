@@ -12,7 +12,6 @@ Diamond edge_diamond(int ind);
 
 int edge_collapse(int ind);
 Star edge_star(int ind);
-Vert calc_norm_point(Edge *e);
 void calc_resol(void);
 int init_algo_data(void);
 

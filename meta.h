@@ -1,7 +1,7 @@
 #ifndef __META_H__
 #define __META_H__
 
-#define IN_DATA                 "data/input/m400.off"
+#define IN_DATA                 "data/input/m100.off"
 #define DEF_IN_PATH             "/home/artyom/db/"
 #define DEF_OUT_PATH            "/home/artyom/mc_db/"
 
@@ -10,12 +10,17 @@
 #define STR_LEN                 200
 #define INFO_SIZE               2500
 
-#define DEF_SV_MASS_SIZE        100      // Количество вершин в EdgeStar
+#define DEF_SV_MASS_SIZE        100                         // Количество вершин в EdgeStar
+#define DEF_SE_MASS_SIZE        (DEF_SV_MASS_SIZE + 2)      // Количество ребер в EdgeStar
 #define DEF_EDGE_MASS_SIZE      5000    // Размер массива ребер
 
-#define DEF_DES_RESOL           0.0475
-#define DEF_DEVIATION           0.085
+#define DEF_DES_RESOL           0.05
+#define DEF_DEVIATION           0.08
 #define DEF_DES_RESOL_2         0.1
+
+// #define DEF_DES_RESOL           0.025
+// #define DEF_DEVIATION           0.05
+// #define DEF_DES_RESOL_2         0.1
 
 typedef struct obj_meta ObjMeta;
 typedef struct vert Vert;
@@ -62,7 +67,9 @@ struct diamond
 struct star
 {
     int length;
+    int ed_length;
     Vert vert[DEF_SV_MASS_SIZE];
+    Edge edge[DEF_SE_MASS_SIZE];
 };
 
 ObjMeta meta;   // Структура для метаданных
