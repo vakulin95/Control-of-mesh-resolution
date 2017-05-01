@@ -108,6 +108,40 @@ ret:
     return Y;
 }
 
+// Сравнить два ребра не смотря на их валидность
+int comp_edges_nosw(Edge *e1, Edge *e2)
+{
+    int Y = 0;
+
+    if(e1->sw && e2->sw)
+    {
+        if(comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[0]))
+        && comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[1])))
+        {
+            Y = 1;
+            goto ret;
+        }
+        else if(comp_vert(&(e1->edge_vert[1]), &(e2->edge_vert[0]))
+             && comp_vert(&(e1->edge_vert[0]), &(e2->edge_vert[1])))
+        {
+            Y = 1;
+            goto ret;
+        }
+        else
+        {
+            Y = 0;
+            goto ret;
+        }
+    }
+    else
+    {
+        Y = 0;
+        goto ret;
+    }
+ret:
+    return Y;
+}
+
 // Поиск одинаковых ребер в массиве
 // Если найдено, возврат индекса, иначе -1
 int search_same_edge(Edge edge, Edge *Array, int size)
@@ -118,6 +152,25 @@ int search_same_edge(Edge edge, Edge *Array, int size)
     for(i = 0; i < size; ++i)
     {
         if(comp_edges(&edge, &(Array[i])))
+        {
+            Y = i;
+            goto ret;
+        }
+    }
+ret:
+    return Y;
+}
+
+// Поиск одинаковых ребер в массиве не смотря на валидность
+// Если найдено, возврат индекса, иначе -1
+int search_same_edge_nosw(Edge edge, Edge *Array, int size)
+{
+    int i;
+    int Y = -1;
+
+    for(i = 0; i < size; ++i)
+    {
+        if(comp_edges_nosw(&edge, &(Array[i])))
         {
             Y = i;
             goto ret;
@@ -156,15 +209,91 @@ Vert calc_ed_midp(Edge e)
 //Вычислить среднее проекций середины ребра на N плоскостей
 Vert calc_edpp_on_plane(Edge e, Star s)
 {
-    int i;
-    Vert Y;
-    float sum;
+    int i, j;
+    Vert Y, temp, N, midp;
+    Edge te;
+    float sum_x, sum_y, sum_z, offset;
 
-    Y = calc_ed_midp(e);
+    midp = calc_ed_midp(e);
+    sum_x = sum_y = sum_z = 0;
+    for(i = 0; i < s.ed_length - 1; i++)
+    {
+        for(j = i + 1; j < s.ed_length; j++)
+        {
+            temp = comm_vert(&(s.edge[i]), &(s.edge[j]));
+            if(temp.x != -1.0) // Если есть общая точка, найти третье ребро
+            {
+                //Определение третьего ребра для поиска
+                if(!comp_vert(&(temp), &(s.edge[i].edge_vert[0])) && !comp_vert(&(temp), &(s.edge[j].edge_vert[0])))
+                {
+                    vert_to_vert(&(te.edge_vert[0]), &(s.edge[i].edge_vert[0]));
+                    vert_to_vert(&(te.edge_vert[1]), &(s.edge[j].edge_vert[0]));
+                }
+                if(!comp_vert(&(temp), &(s.edge[i].edge_vert[0])) && !comp_vert(&(temp), &(s.edge[j].edge_vert[1])))
+                {
+                    vert_to_vert(&(te.edge_vert[0]), &(s.edge[i].edge_vert[0]));
+                    vert_to_vert(&(te.edge_vert[1]), &(s.edge[j].edge_vert[1]));
+                }
+                if(!comp_vert(&(temp), &(s.edge[i].edge_vert[1])) && !comp_vert(&(temp), &(s.edge[j].edge_vert[0])))
+                {
+                    vert_to_vert(&(te.edge_vert[0]), &(s.edge[i].edge_vert[1]));
+                    vert_to_vert(&(te.edge_vert[1]), &(s.edge[j].edge_vert[0]));
+                }
+                if(!comp_vert(&(temp), &(s.edge[i].edge_vert[1])) && !comp_vert(&(temp), &(s.edge[j].edge_vert[1])))
+                {
+                    vert_to_vert(&(te.edge_vert[0]), &(s.edge[i].edge_vert[1]));
+                    vert_to_vert(&(te.edge_vert[1]), &(s.edge[j].edge_vert[1]));
+                }
 
-    
+                if(search_same_edge_nosw(te, EdgeMass, ed_num) != -1)
+                {
+                    N = calc_normal(&temp, &(te.edge_vert[0]), &(te.edge_vert[1]));
+                    offset = calc_offset(&midp, &N);
+                    sum_x += (N.x * midp.x + offset) * N.x;
+                    sum_y += (N.y * midp.y + offset) * N.y;
+                    sum_z += (N.z * midp.z + offset) * N.z;
+                }
+            }
+        }
+    }
+
+    sum_x /= s.ed_length;
+    sum_y /= s.ed_length;
+    sum_z /= s.ed_length;
+
+    Y.x = midp.x - sum_x;
+    Y.y = midp.y - sum_y;
+    Y.z = midp.z - sum_z;
 
     return Y;
+}
+
+Vert calc_normal(Vert *v1, Vert *v2, Vert *v3)
+{
+    Vert V, W, N;
+
+    V.x = v2->x - v1->x;
+    V.y = v2->y - v1->y;
+    V.z = v2->z - v1->z;
+
+    W.x = v3->x - v1->x;
+    W.y = v3->y - v1->y;
+    W.z = v3->z - v1->z;
+
+    N.x = (V.y * W.z) - (V.z * W.y);
+    N.y = (V.z * W.x) - (V.x * W.z);
+    N.z = (V.x * W.y) - (V.y * W.x);
+
+    return N;
+}
+
+float calc_offset(Vert *x, Vert *N)
+{
+    float D;
+
+    D = (N->x * x->x + N->y * x->y + N->z * x->z) / sqrt(pow(N->x, 2) + pow(N->y, 2) + pow(N->z, 2));
+
+    return D;
 }
 
 // Присвоить одно ребро другому
@@ -264,7 +393,8 @@ Vert comm_vert(Edge *e1, Edge *e2)
         goto ret;
     }
 
-    printf("There no common vertices in comm_vert()\n");
+    Y.x = Y.y = Y.z = -1.0;
+    //printf("There no common vertices in comm_vert()\n");
     //getchar();
 
 ret:

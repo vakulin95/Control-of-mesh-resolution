@@ -182,8 +182,7 @@ int edge_collapse(int ind)
 {
     int i;
     Star S;
-    Vert mid = calc_ed_midp(EdgeMass[ind]);
-    Vert temp;
+    Vert mid;// = calc_ed_midp(EdgeMass[ind]);
 
     if(!(EdgeMass[ind].sw))
     {
@@ -210,7 +209,7 @@ int edge_collapse(int ind)
         return 0;
     }
 
-    temp = calc_edpp_on_plane(EdgeMass[ind], S);
+    mid = calc_edpp_on_plane(EdgeMass[ind], S);
     for(i = 0; i < S.length; ++i)
     {
         //printf("%d\n", ed_num);
