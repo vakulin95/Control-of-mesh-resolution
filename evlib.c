@@ -253,7 +253,7 @@ Vert calc_edpp_on_plane(Edge e, Star s)
                     scal_pwo = N.x * midp.x + N.y * midp.y + N.z * midp.z + offset;
                     sum_x += scal_pwo * N.x;
                     sum_y += scal_pwo * N.y;
-                    sum_z += (N.z * midp.z + offset) * N.z;
+                    sum_z += scal_pwo * N.z;
                 }
             }
         }
