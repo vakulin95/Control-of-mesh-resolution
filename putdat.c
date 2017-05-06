@@ -233,12 +233,18 @@ int write_inp_info(int str_num, char info_text[INFO_SIZE][STR_LEN])
 
     fprintf(out_m, "\n---------------------------------Control of mesh resolution---------------------------------\n\n");
     fprintf(out_m,
-    "DEF_IN_PATH\t\t\t%s\nDEF_OUT_PATH\t\t%s\nDEF_EDGE_MASS_SIZE\t%d\n\nDEF_DES_RESOL\t\t%.4f\nDEF_DEVIATION\t\t%.4f\nDEF_DES_RESOL_2\t\t%.4f\n",
+    "DEF_IN_PATH\t\t\t%s\nDEF_OUT_PATH\t\t%s\nDEF_EDGE_MASS_SIZE\t%d\n\nDEF_DES_RESOL\t\t%.4f\nDEF_DEVIATION\t\t%.4f\nDEF_DES_RESOL_2\t\t%.4f\n\n",
     DEF_IN_PATH, DEF_OUT_PATH, DEF_EDGE_MASS_SIZE,
     DEF_DES_RESOL, DEF_DEVIATION, DEF_DES_RESOL_2);
+
+    for(i = 1; i < 9; i++)
+    {
+        fprintf(out_m, "%s\n", info_text[i]);
+    }
+
     fprintf(out_m, "\n--------------------------------------------------------------------------------------------\n\n");
 
-    for(i = 1; i < str_num; ++i)
+    for(i = 9; i < str_num; ++i)
     {
         fprintf(out_m, "%s\n", info_text[i]);
     }

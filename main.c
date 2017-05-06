@@ -43,19 +43,22 @@ int make_base(int i_beg, int i_end)
 {
     int i, j, j_end, s_inf;
     int file_n, r_fl, w_fl;
+    int c_suc, c_rescor, c_rerr, c_flerr, c_err1, c_err2, c_werr, f_num;
     char in_buff[F_NAME_LEN];
     char out_buff[F_NAME_LEN];
 
     char info_text[INFO_SIZE][STR_LEN];
 
     s_inf = 0;
-    sprintf(info_text[s_inf++], "_[%d-%d]", i_beg, i_end);
+    sprintf(info_text[s_inf], "_[%d-%d]", i_beg, i_end);
+    s_inf = 9;
 
+    c_suc = c_rescor = c_rerr = c_flerr = c_err1 = c_err2 = c_werr = f_num = 0;
     for(i = i_beg; i < (i_end + 1); ++i)
     {
         if(i != 18)
         {
-            j_end = 100;
+            j_end = 20;
         }
         else
         {
@@ -63,6 +66,7 @@ int make_base(int i_beg, int i_end)
         }
         for(j = 0, r_fl = 0, w_fl = 0; j < j_end; ++j)
         {
+            f_num++;
             file_n = i * 100 + j;
             init_algo_data();
 
@@ -76,12 +80,14 @@ int make_base(int i_beg, int i_end)
             if(r_fl == 1)
             {
                 sprintf(info_text[s_inf++], "m%d.off: Too many edges", file_n);
+                c_flerr++;
                 copy_file(in_buff, out_buff);
                 continue;
             }
             if(r_fl == -1)
             {
                 sprintf(info_text[s_inf++], "m%d.off: File not found", file_n);
+                c_rerr++;
                 continue;
             }
 
@@ -89,6 +95,7 @@ int make_base(int i_beg, int i_end)
             if(res_max < (DEF_DES_RESOL + (DEF_DEVIATION / 2)))
             {
                 sprintf(info_text[s_inf++], "m%d.off: Resolution correct", file_n);
+                c_rescor++;
                 copy_file(in_buff, out_buff);
                 continue;
             }
@@ -98,12 +105,14 @@ int make_base(int i_beg, int i_end)
                 sprintf(info_text[s_inf++],
                 "m%d.off: Mesh correction failed. Trying without edge_collapse() with max edge len: %.2f",
                 file_n, 2 * DEF_DES_RESOL_2);
+                c_err1++;
 
                 init_algo_data();
                 read_file(in_buff);
                 if(mesh_resol_control(DEF_DES_RESOL_2, 2*DEF_DES_RESOL_2))
                 {
                     sprintf(info_text[s_inf++], "m%d.off: Can't change resolution!\n", file_n);
+                    c_err2++;
                     copy_file(in_buff, out_buff);
                     continue;
                 }
@@ -113,11 +122,21 @@ int make_base(int i_beg, int i_end)
             if(w_fl == -1)
             {
                 sprintf(info_text[s_inf++], "m%d.off: File writing error", file_n);
+                c_werr++;
                 continue;
             }
             sprintf(info_text[s_inf++], "m%d.off: Resolution changed successfully", file_n);
+            c_suc++;
         }
     }
+    sprintf(info_text[1], "Number of processed files                          - %d files", f_num);
+    sprintf(info_text[2], "Resolution changed successfully in                 - %d files", c_suc);
+    sprintf(info_text[3], "Too many edges in                                  - %d files", c_flerr);
+    sprintf(info_text[4], "File not found in                                  - %d files", c_rerr);
+    sprintf(info_text[5], "Resolution correct in                              - %d files", c_rescor);
+    sprintf(info_text[6], "Mesh correction failed on desired resolution in    - %d files", c_err1);
+    sprintf(info_text[7], "Can't change resolution in                         - %d files", c_err2);
+    sprintf(info_text[8], "File writing error in                              - %d files", c_werr);
     write_inp_info(s_inf, info_text);
 
     return 0;

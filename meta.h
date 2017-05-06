@@ -12,10 +12,10 @@
 
 #define DEF_SV_MASS_SIZE        100                         // Количество вершин в EdgeStar
 #define DEF_SE_MASS_SIZE        (DEF_SV_MASS_SIZE + 2)      // Количество ребер в EdgeStar
-#define DEF_EDGE_MASS_SIZE      5000    // Размер массива ребер
+#define DEF_EDGE_MASS_SIZE      5000                        // Размер массива ребер
 
-#define DEF_DES_RESOL           0.05
-#define DEF_DEVIATION           0.08
+#define DEF_DES_RESOL           0.0475
+#define DEF_DEVIATION           0.0850
 #define DEF_DES_RESOL_2         0.1
 
 // #define DEF_DES_RESOL           0.025
