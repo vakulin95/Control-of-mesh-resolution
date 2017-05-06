@@ -19,7 +19,7 @@ int print_edge(Edge e);
 Vert calc_ed_midp(Edge e);
 Vert calc_edpp_on_plane(Edge e, Star s);
 Vert calc_normal(Vert *v1, Vert *v2, Vert *v3);
-float calc_offset(Vert *x, Vert *N);
+float calc_offset(Vert *v, Vert *x, Vert *N);
 int edge_to_edge(Edge *e1, Edge e2);
 
 int is_face(Edge *e1, Edge *e2, Edge *e3);

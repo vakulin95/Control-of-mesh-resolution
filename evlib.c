@@ -212,7 +212,7 @@ Vert calc_edpp_on_plane(Edge e, Star s)
     int i, j;
     Vert Y, temp, N, midp;
     Edge te;
-    float sum_x, sum_y, sum_z, offset;
+    float sum_x, sum_y, sum_z, offset, scal_pwo;
 
     midp = calc_ed_midp(e);
     sum_x = sum_y = sum_z = 0;
@@ -248,9 +248,11 @@ Vert calc_edpp_on_plane(Edge e, Star s)
                 if(search_same_edge_nosw(te, EdgeMass, ed_num) != -1)
                 {
                     N = calc_normal(&temp, &(te.edge_vert[0]), &(te.edge_vert[1]));
-                    offset = calc_offset(&midp, &N);
-                    sum_x += (N.x * midp.x + offset) * N.x;
-                    sum_y += (N.y * midp.y + offset) * N.y;
+                    offset = calc_offset(&temp, &midp, &N);
+
+                    scal_pwo = N.x * midp.x + N.y * midp.y + N.z * midp.z + offset;
+                    sum_x += scal_pwo * N.x;
+                    sum_y += scal_pwo * N.y;
                     sum_z += (N.z * midp.z + offset) * N.z;
                 }
             }
@@ -268,6 +270,7 @@ Vert calc_edpp_on_plane(Edge e, Star s)
     return Y;
 }
 
+//Вычислить нормаль к плоскости по трем точкам
 Vert calc_normal(Vert *v1, Vert *v2, Vert *v3)
 {
     Vert V, W, N;
@@ -287,13 +290,16 @@ Vert calc_normal(Vert *v1, Vert *v2, Vert *v3)
     return N;
 }
 
-float calc_offset(Vert *x, Vert *N)
+// Вычислить расстояние от точки до плоскости
+float calc_offset(Vert *v, Vert *x, Vert *N)
 {
-    float D;
+    float O, d;
 
-    D = (N->x * x->x + N->y * x->y + N->z * x->z) / sqrt(pow(N->x, 2) + pow(N->y, 2) + pow(N->z, 2));
+    d = -(N->x * v->x + N->y * v->y + N->z * v->z);
 
-    return D;
+    O = fabs(N->x * x->x + N->y * x->y + N->z * x->z + d) / sqrt(pow(N->x, 2) + pow(N->y, 2) + pow(N->z, 2));
+
+    return O;
 }
 
 // Присвоить одно ребро другому
